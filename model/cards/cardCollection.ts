@@ -1,0 +1,266 @@
+import { Card } from "./card";
+
+export class CardCollection{
+    protected cards: Card[] = []
+
+    getCount(): number{
+        return this.cards.length
+    }
+}
+
+export class Deck extends CardCollection {
+    symbols: string[] = ["heart", "diamond", "clover", "spade"];
+    values: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+
+    constructor() {
+        super();
+        for (const i in this.symbols) {
+            for (const j in this.values) {
+                this.cards.push(new Card(Number(i), String(j)));
+            }
+        }
+    }
+
+    shuffle(){
+        const shuffledCards: Card[] = []
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            shuffledCards.push(this.cards[j])
+            this.cards = this.cards.filter((_,index) => index !== j )
+        }
+        this.cards = shuffledCards
+    }
+
+    drawXCards(number : number):Card[]{
+        if (this.cards.length < number) throw new Error("Not enough cards in the deck");
+        return this.cards.splice(0, number);
+    }
+}
+
+export class Crapette extends CardCollection{
+    
+    constructor(){
+        super()
+    }
+
+    initialize(cards: Card[]){
+        this.cards = cards
+    }
+
+    enemyAddCard(card: Card){
+        let topCard:Card|null = this.getTopCardValue()
+        if (topCard === null){
+            throw new Error("Cannot put this card here")
+        }
+
+        if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
+            this.cards.push(card)
+        }
+        else{
+            throw new Error("Cannot put this card here")
+        }
+    }
+
+    getTopCardValue():Card|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        else return this.cards[-1]
+    }
+
+    playTopCard():Card{
+        const topCard = this.cards.pop()
+        if (!topCard){
+            throw new Error("there is no card in the crapette");
+        }
+        return topCard
+    }
+}
+
+export class Bin extends CardCollection{
+
+    protected played: Boolean = false
+
+    constructor(){
+        super()
+    }
+
+    resetTurn(){
+        this.played = false
+    }
+
+    resetDeck():Card[]{
+        if (this.cards.length<=1){
+            return this.cards.splice(0, 1);
+        }
+        else {
+            return this.cards.splice(0, this.cards.length-1);
+        }
+    }
+
+    enemyAddCard(card: Card){
+        let topCard:Card|null = this.getTopCardValue()
+        if (topCard === null){
+            throw new Error("Cannot put this card here")
+        }
+
+        if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
+            this.cards.push(card)
+        }
+        else{
+            throw new Error("Cannot put this card here")
+        }
+    }
+
+    addCard(card:Card){
+        this.cards.push(card)
+    }
+
+    getTopCardValue():Card|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        else return this.cards[-1]
+    }
+
+    playTopCard():Card{
+        if (this.played === true){
+            throw new Error("bin already played");
+        }
+        const topCard = this.cards.pop()
+        if (!topCard){
+            throw new Error("there is no card in the bin");
+        }
+        return topCard
+    }
+
+}
+
+export class Draw extends CardCollection{
+
+    private shown = false
+
+    constructor(){
+        super()
+    }
+
+    initialize(cards: Card[]){
+        this.cards = cards
+    }
+
+    enemyAddCard(card: Card){
+        let topCard:Card|null = this.getTopCardValue()
+        if (topCard === null){
+            throw new Error("Cannot put this card here")
+        }
+
+        if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
+            this.cards.push(card)
+        }
+        else{
+            throw new Error("Cannot put this card here")
+        }
+    }
+
+    getTopCardValue():Card|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        else return this.cards[-1]
+    }
+
+    playTopCard():Card{
+        const topCard = this.cards.pop()
+        if (!topCard){
+            throw new Error("there is no card in the draw");
+        }
+        return topCard
+    }
+
+    shuffle(){
+        const shuffledCards: Card[] = []
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            shuffledCards.push(this.cards[j])
+            this.cards = this.cards.filter((_,index) => index !== j )
+        }
+        this.cards = shuffledCards
+    }
+
+    switchDrawShown(){
+        this.shown = !this.shown
+    }
+
+    setDrawShown(bool: boolean){
+        this.shown = bool
+    }
+
+}
+
+export class AcePile extends CardCollection{
+
+    constructor(){
+        super()
+    }
+
+    addCard(card: Card){
+        let topCard:Card|null = this.getTopCardValue()
+        if (topCard === null){
+            this.cards.push(card)
+        }
+        
+        if (topCard !== null && topCard.symbol === card.symbol && topCard.value === card.value - 1){
+            this.cards.push(card)
+        }
+        else{
+            throw new Error("Cannot put this card here")
+        }
+    }
+
+    getTopCardValue():Card|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        else return this.cards[-1]
+    }
+}
+
+export class BoardPile extends CardCollection{
+
+    constructor(){
+        super()
+    }
+
+    initialize(card: Card){
+        this.cards.push(card)
+    }
+
+    addCard(card: Card){
+        let topCard:Card|null = this.getTopCardValue()
+        if (topCard === null){
+            this.cards.push(card)
+        }
+
+        if (topCard !== null && topCard.symbol !== card.symbol && topCard.value === card.value + 1){
+            this.cards.push(card)
+        }
+        else{
+            throw new Error("Cannot put this card here")
+        }
+    }
+
+    getTopCardValue():Card|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        else return this.cards[-1]
+    }
+
+    playTopCard():Card{
+        const topCard = this.cards.pop()
+        if (!topCard){
+            throw new Error("there is no card in the stack");
+        }
+        return topCard
+    }
+}
