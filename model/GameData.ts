@@ -15,10 +15,12 @@ export class GameData{
 
     constructor(id1: number, nickname1: string, id2: number, nickname2: string){
         const deckPlayer1 = new Deck()
+        deckPlayer1.shuffle()
         const boardCards1 = deckPlayer1.drawXCards(4)
         const player1 = new Player(nickname1, id1, deckPlayer1)
 
         const deckPlayer2 = new Deck()
+        deckPlayer2.shuffle()
         const boardCards2 = deckPlayer2.drawXCards(4)
         const player2 = new Player(nickname2, id2, deckPlayer2)
 
@@ -191,13 +193,11 @@ export class GameData{
         }
         this.czechMove(originCard, destination)
 
-        //jouer la carte
         this.addCard(destination,originCard,)
         this.playTopCard(origin)
         
 
         if (origin.zone === "DRAW" && destination.zone === "THROW"){
-            //LANCE LE SWITCH DE TOUR
             this.playersTurns[0] = this.playersTurns[1]
             this.playersTurns[1] = playerId
             this.players[playerId].resetforNextTurn()
