@@ -12,7 +12,7 @@ export class GameBoard{
         if (initCards.length !== 8 ){
             throw new Error("not / to many cards to init the board")
         }
-        for (let i = 0; i<initCards.length-1; i++){
+        for (let i = 0; i<initCards.length; i++){
             this.boardSpots[i].initialize(initCards[i])
         }
     }
