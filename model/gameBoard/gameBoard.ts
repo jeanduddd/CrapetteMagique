@@ -16,7 +16,7 @@ export class GameBoard{
         }
     }
 
-    getTopAce(id: number){
+    getTopAce(id: number):Card|null{
         let card:Card|null = null
         if (id >=0 && id <8){
             card = this.aceSpots[id].getTopCardValue()
@@ -24,7 +24,7 @@ export class GameBoard{
         return card
     }
 
-    addOnAce(id:number, card: Card){
+    addOnAce(id:number, card: Card):void{
         if (id >=0 && id <8){
             this.aceSpots[id].addCard(card)
         }
@@ -38,17 +38,25 @@ export class GameBoard{
         return card
     }
 
-    getBoard(){
+    getBoard():BoardPile[]{
         return this.boardSpots
     }
 
-    addOnBoard(id:number, card: Card){
+    getAces():(Card|null)[]{
+        const aces = []
+        for (let i = 0; i<8; i++){
+            aces.push(this.getTopAce(i))
+        }
+        return aces
+    }
+
+    addOnBoard(id:number, card: Card):void{
         if (id >=0 && id <8){
             this.boardSpots[id].addCard(card)
         }
     }
 
-    playFromBoard(id: number){
+    playFromBoard(id: number):void{
         if (id >=0 && id <8){
             this.boardSpots[id].playTopCard()
         }

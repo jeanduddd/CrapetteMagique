@@ -21,7 +21,7 @@ export class Deck extends CardCollection {
         }
     }
 
-    shuffle(){
+    shuffle():void{
         const shuffledCards: Card[] = []
         for (let i = this.cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -43,11 +43,11 @@ export class Crapette extends CardCollection{
         super()
     }
 
-    initialize(cards: Card[]){
+    initialize(cards: Card[]):void{
         this.cards = cards
     }
 
-    enemyAddCard(card: Card){
+    enemyAddCard(card: Card):void{
         let topCard:Card|null = this.getTopCardValue()
         if (topCard === null){
             throw new Error("Cannot put this card here")
@@ -85,7 +85,7 @@ export class Bin extends CardCollection{
         super()
     }
 
-    resetTurn(){
+    resetTurn():void{
         this.played = false
     }
 
@@ -98,7 +98,7 @@ export class Bin extends CardCollection{
         }
     }
 
-    enemyAddCard(card: Card){
+    enemyAddCard(card: Card):void{
         let topCard:Card|null = this.getTopCardValue()
         if (topCard === null){
             throw new Error("Cannot put this card here")
@@ -112,7 +112,7 @@ export class Bin extends CardCollection{
         }
     }
 
-    addCard(card:Card){
+    addCard(card:Card):void{
         this.cards.push(card)
     }
 
@@ -144,11 +144,11 @@ export class Draw extends CardCollection{
         super()
     }
 
-    initialize(cards: Card[]){
+    initialize(cards: Card[]):void{
         this.cards = cards
     }
 
-    enemyAddCard(card: Card){
+    enemyAddCard(card: Card):void{
         let topCard:Card|null = this.getTopCardValue()
         if (topCard === null){
             throw new Error("Cannot put this card here")
@@ -177,7 +177,7 @@ export class Draw extends CardCollection{
         return topCard
     }
 
-    shuffle(){
+    shuffle():void{
         const shuffledCards: Card[] = []
         for (let i = this.cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -187,11 +187,11 @@ export class Draw extends CardCollection{
         this.cards = shuffledCards
     }
 
-    switchDrawShown(){
+    switchDrawShown():void{
         this.shown = !this.shown
     }
 
-    setDrawShown(bool: boolean){
+    setDrawShown(bool: boolean):void{
         this.shown = bool
     }
 
@@ -203,7 +203,7 @@ export class AcePile extends CardCollection{
         super()
     }
 
-    addCard(card: Card){
+    addCard(card: Card):void{
         let topCard:Card|null = this.getTopCardValue()
         if (topCard === null){
             this.cards.push(card)
@@ -231,11 +231,11 @@ export class BoardPile extends CardCollection{
         super()
     }
 
-    initialize(card: Card){
+    initialize(card: Card):void{
         this.cards.push(card)
     }
 
-    addCard(card: Card){
+    addCard(card: Card):void{
         let topCard:Card|null = this.getTopCardValue()
         if (topCard === null){
             this.cards.push(card)

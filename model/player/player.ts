@@ -1,5 +1,6 @@
 import { PlayerHand } from "../playerHand/playerHand"; 
 import { Deck } from "../cards/cardCollection"; 
+import { Card } from "../cards/card";
 
 export class Player{
     protected playerHand: PlayerHand
@@ -12,47 +13,47 @@ export class Player{
         this.playerHand = new PlayerHand(deck)
     }
 
-    playCrapette(){
-        this.playerHand.playCrapette()
+    playCrapette():Card{
+        return this.playerHand.playCrapette()
     }
 
-    getCrapetteValue(){
+    getCrapetteValue():Card|null{
         return this.playerHand.getCrapetteTopValue()
     }
 
-    playBin(){
-        this.playerHand.playBin()
+    playBin():Card{
+        return this.playerHand.playBin()
     }
 
-    getBinValue(){
+    getBinValue():Card|null{
         return this.playerHand.getBinTopValue()
     }
 
-    playDraw(){
-        this.playerHand.playDraw()
+    playDraw():Card{
+        return this.playerHand.playDraw()
     }
 
-    getDrawValue(){
+    getDrawValue():Card|null{
         return this.playerHand.getDrawTopValue()
     }
 
-    switchDraw(){
+    switchDraw():void{
         this.playerHand.switchDrawShown()
     }
 
-    resetforNextTurn(){
+    resetforNextTurn():void{
         this.playerHand.endOfTurn()
     }
 
-    newTurn(){
+    newTurn():void{
         this.playerHand.beginingOfTurn()
     }
 
-    hasWon(){
+    hasWon():boolean{
         return this.playerHand.hasWon()
     }
 
-    getName(){
+    getName():string{
         return this.name
     }
 }

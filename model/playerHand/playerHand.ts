@@ -19,35 +19,35 @@ export class PlayerHand{
         return this.crapette.getTopCardValue()
     }
 
-    playCrapette(){
+    playCrapette():Card{
         return this.crapette.playTopCard()
     }
 
-    enemyAddCardCrapette(card: Card){
+    enemyAddCardCrapette(card: Card):void{
         this.crapette.enemyAddCard(card)
     }
 
-    getBinTopValue(){
+    getBinTopValue():Card|null{
         return this.bin.getTopCardValue()
     }
 
-    playBin(){
+    playBin():Card{
         return this.bin.playTopCard()
     }
 
-    addInBin(card: Card){
+    addInBin(card: Card):void{
         this.bin.addCard(card)
     }
 
-    enemyAddCardBin(card: Card){
+    enemyAddCardBin(card: Card):void{
         this.bin.enemyAddCard(card)
     }
 
-    getDrawTopValue(){
+    getDrawTopValue():Card|null{
         return this.draw.getTopCardValue()
     }
 
-    playDraw(){
+    playDraw():Card{
         const card = this.draw.playTopCard()
         if (this.crapette.getCount() === 0){
             this.draw.setDrawShown(true)
@@ -58,16 +58,16 @@ export class PlayerHand{
         return card
     }
 
-    enemyAddCardDraw(card: Card){
+    enemyAddCardDraw(card: Card):void{
         this.bin.enemyAddCard(card)
     }
 
-    endOfTurn(){
+    endOfTurn():void{
         this.bin.resetTurn()
         this.draw.setDrawShown(false)
     }
 
-    beginingOfTurn(){
+    beginingOfTurn():void{
         let cards: Card[] = []
         if (this.draw.getCount() === 0 ){
             cards = this.bin.resetDeck()
@@ -79,11 +79,11 @@ export class PlayerHand{
         }
     }
 
-    switchDrawShown(){
+    switchDrawShown():void{
         this.draw.switchDrawShown()
     }
 
-    hasWon(){
+    hasWon():boolean{
         if ((this.crapette.getCount() + this.bin.getCount() + this.draw.getCount()) === 0){
             return true
         }
