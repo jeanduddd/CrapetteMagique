@@ -1,6 +1,7 @@
 import { PlayerHand } from "../playerHand/playerHand"; 
 import { Deck } from "../cards/cardCollection"; 
 import { Card } from "../cards/card";
+import { ZoneName } from "../IPlayCard";
 
 export class Player{
     protected playerHand: PlayerHand
@@ -13,28 +14,16 @@ export class Player{
         this.playerHand = new PlayerHand(deck)
     }
 
-    playCrapette():Card{
-        return this.playerHand.playCrapette()
+    getTopCardValue(name: ZoneName):Card|null{
+        return this.playerHand.getTopCardValue(name)
     }
 
-    getCrapetteValue():Card|null{
-        return this.playerHand.getCrapetteTopValue()
+    playTopValue(name: ZoneName):Card{
+        return this.playerHand.playTopValue(name)
     }
 
-    playBin():Card{
-        return this.playerHand.playBin()
-    }
-
-    getBinValue():Card|null{
-        return this.playerHand.getBinTopValue()
-    }
-
-    playDraw():Card{
-        return this.playerHand.playDraw()
-    }
-
-    getDrawValue():Card|null{
-        return this.playerHand.getDrawTopValue()
+    addOnTop(card: Card, name: ZoneName):void{
+        return this.playerHand.addOnTop(card, name)
     }
 
     switchDraw():void{

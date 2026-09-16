@@ -148,20 +148,6 @@ export class Draw extends CardCollection{
         this.cards = cards
     }
 
-    enemyAddCard(card: Card):void{
-        let topCard:Card|null = this.getTopCardValue()
-        if (topCard === null){
-            throw new Error("Cannot put this card here")
-        }
-
-        if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
-            this.cards.push(card)
-        }
-        else{
-            throw new Error("Cannot put this card here")
-        }
-    }
-
     getTopCardValue():Card|null{
         if (this.cards.length === 0){
             return null

@@ -1,5 +1,6 @@
 import { AcePile, BoardPile } from "../cards/cardCollection"
 import { Card } from "../cards/card"
+import { ZoneName } from "../IPlayCard"
 
 export class GameBoard{
     protected aceSpots: AcePile[]
@@ -16,27 +17,55 @@ export class GameBoard{
         }
     }
 
-    getTopAce(id: number):Card|null{
+    getTopCardValue(name: ZoneName, id: number):Card|null{
         let card:Card|null = null
-        if (id >=0 && id <8){
-            card = this.aceSpots[id].getTopCardValue()
+        switch (name) {
+            case "ACE":
+                if (id >=0 && id <8){
+                    card = this.aceSpots[id].getTopCardValue()
+                }
+                return card
+            case "BOARD":
+                if (id >=0 && id <8){
+                    card = this.boardSpots[id].getTopCardValue()
+                }
+                return card
+            default:
+                throw new Error("Illegal Move")
         }
-        return card
     }
 
-    addOnAce(id:number, card: Card):void{
-        if (id >=0 && id <8){
-            this.aceSpots[id].addCard(card)
+    playTopValue(name: ZoneName, id: number){
+        switch (name) {
+            case "ACE":
+                throw new Error("cannot play from an Ace stack")
+            case "BOARD":
+                if (id >=0 && id <8){
+                    this.boardSpots[id].playTopCard()
+                }
+                break;
+            default:
+                throw new Error("Illegal Move")
         }
     }
 
-    getTopBoard(id: number):Card|null{
-        let card:Card|null = null
-        if (id >=0 && id <8){
-            card = this.boardSpots[id].getTopCardValue()
+    addOnTop(card: Card, name: ZoneName, id: number){
+        switch (name) {
+            case "ACE":
+                if (id >=0 && id <8){
+                    this.aceSpots[id].addCard(card)
+                }
+                break; 
+            case "BOARD":
+                if (id >=0 && id <8){
+                    this.boardSpots[id].addCard(card)
+                }
+                break;
+            default:
+                throw new Error("Illegal Move")
         }
-        return card
     }
+
 
     getBoard():BoardPile[]{
         return this.boardSpots
@@ -45,22 +74,12 @@ export class GameBoard{
     getAces():(Card|null)[]{
         const aces = []
         for (let i = 0; i<8; i++){
-            aces.push(this.getTopAce(i))
+            aces.push(this.getTopCardValue("ACE", i))
         }
         return aces
     }
 
-    addOnBoard(id:number, card: Card):void{
-        if (id >=0 && id <8){
-            this.boardSpots[id].addCard(card)
-        }
-    }
-
-    playFromBoard(id: number):void{
-        if (id >=0 && id <8){
-            this.boardSpots[id].playTopCard()
-        }
-    }
+    
 
     /*
     add on Ace

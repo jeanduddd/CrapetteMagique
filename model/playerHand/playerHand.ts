@@ -1,5 +1,6 @@
 import { Crapette, Bin, Draw, Deck } from "../cards/cardCollection"
 import { Card } from "../cards/card"
+import { ZoneName } from "../IPlayCard"
 
 export class PlayerHand{
     protected crapette: Crapette
@@ -15,51 +16,55 @@ export class PlayerHand{
         this.draw.initialize(deck.drawXCards(35))
     }
 
-    getCrapetteTopValue(): Card|null{
-        return this.crapette.getTopCardValue()
-    }
-
-    playCrapette():Card{
-        return this.crapette.playTopCard()
-    }
-
-    enemyAddCardCrapette(card: Card):void{
-        this.crapette.enemyAddCard(card)
-    }
-
-    getBinTopValue():Card|null{
-        return this.bin.getTopCardValue()
-    }
-
-    playBin():Card{
-        return this.bin.playTopCard()
-    }
-
-    addInBin(card: Card):void{
-        this.bin.addCard(card)
-    }
-
-    enemyAddCardBin(card: Card):void{
-        this.bin.enemyAddCard(card)
-    }
-
-    getDrawTopValue():Card|null{
-        return this.draw.getTopCardValue()
-    }
-
-    playDraw():Card{
-        const card = this.draw.playTopCard()
-        if (this.crapette.getCount() === 0){
-            this.draw.setDrawShown(true)
+    getTopCardValue(name: ZoneName):Card|null{
+        switch (name) {
+            case "CRAPETTE":
+                return this.crapette.getTopCardValue()
+            case "BIN":
+                return this.bin.getTopCardValue()
+            case "THROW":
+                return this.bin.getTopCardValue()
+            case "DRAW":
+                return this.draw.getTopCardValue()
+            default:
+                throw new Error ("Illegal move")
         }
-        else{
-            this.draw.setDrawShown(false)
-        }
-        return card
     }
 
-    enemyAddCardDraw(card: Card):void{
-        this.bin.enemyAddCard(card)
+    playTopValue(name: ZoneName):Card{
+        switch (name) {
+            case "CRAPETTE":
+                return this.crapette.playTopCard()
+            case "BIN":
+                return this.bin.playTopCard()
+            case "DRAW":
+                const card = this.draw.playTopCard()
+                if (this.crapette.getCount() === 0){
+                    this.draw.setDrawShown(true)
+                }
+                else{
+                    this.draw.setDrawShown(false)
+                }
+                return card
+            default:
+                throw new Error ("Illegal move")
+        }
+    }
+
+    addOnTop(card: Card, name: ZoneName):void{
+        switch (name) {
+            case "BIN":
+                this.bin.enemyAddCard(card)
+                break;
+            case "THROW":
+                this.bin.addCard(card)
+                break;
+            case "CRAPETTE":
+                this.crapette.enemyAddCard(card)
+                break;
+            default:
+                throw new Error ("Illegal move")
+        }
     }
 
     endOfTurn():void{
