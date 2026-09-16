@@ -35,14 +35,15 @@ export class GameBoard{
         }
     }
 
-    playTopValue(name: ZoneName, id: number){
+    playTopValue(name: ZoneName, id: number):Card{
         switch (name) {
             case "ACE":
                 throw new Error("cannot play from an Ace stack")
             case "BOARD":
-                if (id >=0 && id <8){
-                    this.boardSpots[id].playTopCard()
+                if (id <0 && id >=8){
+                    throw new Error("Illegal Move")
                 }
+                return this.boardSpots[id].playTopCard()
                 break;
             default:
                 throw new Error("Illegal Move")
