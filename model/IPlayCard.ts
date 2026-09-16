@@ -2,7 +2,7 @@ export type ZoneName = 'DRAW' | 'CRAPETTE' | 'BIN' | 'THROW' | 'BOARD' | 'ACE';
 
 export interface Location {
     zone: ZoneName;
-    index?: number;
+    index: number|null;
 }
 
 export interface PlayRequest {
