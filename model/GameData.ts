@@ -29,8 +29,8 @@ export class GameData{
             [id1]: player1,
             [id2]: player2,
         }
-        const C1 = player1.getCrapetteValue()
-        const C2 = player2.getCrapetteValue()
+        const C1 = player1.getTopCardValue("CRAPETTE")
+        const C2 = player2.getTopCardValue("CRAPETTE")
         if (C1 && C2 && C1.value >= C2.value){
             this.playersTurns = [id1, id2]
         }
@@ -63,43 +63,18 @@ export class GameData{
         this.players[this.playersTurns[0]].switchDraw()
     }
 
-    getMyTopCard(location: Location):Card|null{
+    getTopCard(location: Location, playerId: number|null):Card|null{
+        const pileId: number|null = location.index
         let card = null
         switch (location.zone) {
             case "BIN":
-                card =  this.players[this.playersTurns[0]].getBinValue()
-                break;
             case "CRAPETTE":
-                card =  this.players[this.playersTurns[0]].getCrapetteValue()
-                break;
             case "DRAW":
-                card =  this.players[this.playersTurns[0]].getDrawValue()
-                break;
-            default:
-                throw new Error("location corresponds to nothing...")       
-        }
-        return card
-    }
-
-    getTopCardToPlay(location: Location):Card|null{
-        let card = null
-        switch (location.zone) {
-            case "BIN":
-                card =  this.players[this.playersTurns[1]].getBinValue()
-                break;
-            case "CRAPETTE":
-                card =  this.players[this.playersTurns[1]].getCrapetteValue()
-                break;
-            case "DRAW":
-                card =  this.players[this.playersTurns[1]].getDrawValue()
+                if (playerId !== null) card = this.players[this.playersTurns[playerId]].getTopCardValue(location.zone)
                 break;
             case "BOARD":
-                if (!location.index) throw new Error("Cannot locate the corresponding row")
-                card = this.gameBoard.getTopBoard(location.index)
-                break;
             case "ACE":
-                if (!location.index) throw new Error("Cannot locate the corresponding row")
-                card = this.gameBoard.getTopAce(location.index)
+                if (pileId !== null) card = this.gameBoard.getTopCardValue(location.zone, pileId)
                 break;
             default:
                 throw new Error("location corresponds to nothing...")       
@@ -107,29 +82,40 @@ export class GameData{
         return card
     }
 
-    playCard(origin:Location, destination:Location):void{
-        
-        switch (destination.zone) {
+    addCard(location: Location, card: Card):void{
+        const pileId: number|null = location.index
+        switch (location.zone) {
             case "THROW":
-                this.players[this.playersTurns[0]].playDraw()
-                this.players[this.playersTurns[0]].addOnBin(card)
+                this.players[this.playersTurns[this.playersTurns[0]]].addOnTop(card, location.zone)
                 break;
             case "BIN":
-                this.players[this.playersTurns[0]].playBin()
-                this.players[this.playersTurns[0]].addOnBin(card)
-                break;
             case "CRAPETTE":
-                
+                this.players[this.playersTurns[this.playersTurns[1]]].addOnTop(card, location.zone)
                 break;
             case "BOARD":
-                
-                break;
             case "ACE":
-                
+                if (pileId !== null) this.gameBoard.addOnTop(card, location.zone, pileId)
                 break;
             default:
-                throw new Error("location corresponds to nothing...")       
+                throw new Error("location corresponds to nothing...")
         }
+        throw new Error("Illegal Move")
+    }
+
+    playTopCard(location: Location):Card{
+        const pileId: number|null = location.index
+        switch (location.zone) {
+            case "BIN":
+            case "CRAPETTE":
+            case "DRAW":
+                return this.players[this.playersTurns[this.playersTurns[0]]].playTopValue(location.zone)
+            case "BOARD":
+                if (pileId !== null) return this.gameBoard.playTopValue(location.zone, pileId)
+                break;
+            default:
+                throw new Error("location corresponds to nothing...")
+        }
+        throw new Error("Illegal Move")
     }
 
     initTurn(){
@@ -137,13 +123,20 @@ export class GameData{
     }
 
     czechMove(card: Card, destination: Location){
-        const destinationCard = this.getTopCardToPlay(destination)
+        const destinationCard = this.getTopCard(destination, this.playersTurns[0])
         if (destination.zone === "DRAW"){
             throw new Error("this card cannot be played here")
         }
-        if (destination.zone === "ACE" && destinationCard !== null){
-            if (destinationCard.symbol !== card.symbol || destinationCard.value !== (card.value - 1)){
-                throw new Error("you have to play the same symbol and value + 1")
+        if (destination.zone === "ACE"){
+            if (destinationCard !== null){
+                if (destinationCard.symbol !== card.symbol || destinationCard.value !== (card.value - 1)){
+                    throw new Error("you have to play the same symbol and value + 1")
+                }
+            }
+            else{
+                if (card.value != 1){
+                    throw new Error("you have to play an ace in an empty ACE spot")
+                }
             }
         }
         if (destination.zone === "BOARD" && destinationCard !== null){
@@ -166,6 +159,9 @@ export class GameData{
         }
     }
 
+
+
+
     play(playerId: number, origin: Location, destination: Location){
         if (playerId !== this.playersTurns[0]){
             if (playerId ! in this.playersTurns){
@@ -173,66 +169,45 @@ export class GameData{
             }
             throw new Error(`Its not the turn of ${this.players[playerId].getName()}`)
         }
+        // if (origin.zone === "THROW"){
+        //     throw new Error("Illegal Move")
+        // }
         if (origin.zone !== "DRAW" && destination.zone === "THROW"){
-            const card = this.getTopCard(origin)
-            if (card === null) throw new Error("illegal move")
-            this.players[playerId].addOnBin(card)
-            this.playersTurns[0] = this.playersTurns[1]
-            this.playersTurns[1] = playerId
-            this.players[playerId].resetforNextTurn()
+            throw new Error('Illegal move')
         }
-        if (destination.zone === "THROW"){
+        if (origin.zone === "ACE" ){
             throw new Error("Illegal Move")
         }
+        // if (destination.zone === "DRAW"){
+        //     throw new Error('Illegal move')
+        // }
 
-        const originCard = this.getTopCard(origin)
-        const destinationCard = this.getTopCard(destination)
-
+        const currentPlayer = this.playersTurns[0]
+        const player = this.players[playerId]
+        
+        const originCard = this.getTopCard(origin, currentPlayer)
         if (originCard === null){
             throw new Error("Illegal Move")
         }
         this.czechMove(originCard, destination)
 
+        //jouer la carte
+        this.addCard(destination,originCard,)
+        this.playTopCard(origin)
+        
 
-
-
+        if (origin.zone === "DRAW" && destination.zone === "THROW"){
+            //LANCE LE SWITCH DE TOUR
+            this.playersTurns[0] = this.playersTurns[1]
+            this.playersTurns[1] = playerId
+            this.players[playerId].resetforNextTurn()
+        }
 
         if (this.players[playerId].hasWon()){
             this.winnerName = this.getPlayerName()
             this.gameStatus = "won"
         }
 
-        
-        /*
-        Jeu - Jeu 
-        Jeu - Ace
-        Jeu - Crapette
-        Jeu - Poubelle
-        Crapette - Jeu 
-        Crapette - Crapette
-        Crapette - Poubelle
-        Crapette - Ace
-        Poubelle - Jeu
-        Poubelle - Poubelle
-        Poubelle - Crapette
-        Poubelle - Ace
-        Pioche - Crapette
-        Pioche - Poubelle
-        Pioche - Jeu
-        Pioche - Ace
-        Pioche - Throw
-        */
-
     }
 
-
-    /*
-    play a card (Origin Dest)
-
-    throw to the bin --> cad la fin du tour (c'est un sous cas de play a card en soit)
-
-    fait une vérif à chaque fois que qqn pose une carte s'il a gagné, à la fin de la fction play a card
-    throw une erreur si partie gagnée et qu'on joue encore
-
-    */
 }
