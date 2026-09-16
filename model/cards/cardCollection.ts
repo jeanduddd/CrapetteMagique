@@ -14,21 +14,18 @@ export class Deck extends CardCollection {
 
     constructor() {
         super();
-        for (const i in this.symbols) {
-            for (const j in this.values) {
-                this.cards.push(new Card(Number(i), String(j)));
+        for (const i of this.symbols) {
+            for (const j of this.values) {
+                this.cards.push(new Card(j, i));
             }
         }
     }
 
     shuffle():void{
-        const shuffledCards: Card[] = []
-        for (let i = this.cards.length - 1; i > 0; i--) {
+        for (let i = this.cards.length - 1; i >= 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            shuffledCards.push(this.cards[j])
-            this.cards = this.cards.filter((_,index) => index !== j )
+            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
         }
-        this.cards = shuffledCards
     }
 
     drawXCards(number : number):Card[]{
