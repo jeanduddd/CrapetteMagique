@@ -84,8 +84,12 @@ export class GameData{
         return this.gameBoard.getBoard()
     }
 
-    getPlayerName(){
-        return this.players[this.playersTurns[0]].getName()
+    getPlayerName(playerId: number){
+        return this.players[playerId].getName()
+    }
+
+    getPlayingPlayerName(){
+        return this.players[this.playersTurns[0]]
     }
 
     showDraw(){
@@ -99,14 +103,18 @@ export class GameData{
             case "BIN":
             case "CRAPETTE":
             case "DRAW":
-                if (playerId !== null) card = this.players[this.playersTurns[playerId]].getTopCardValue(location.zone)
+                if (playerId !== null) card = this.players[playerId].getTopCardValue(location.zone)
                 break;
             case "BOARD":
             case "ACE":
                 if (pileId !== null) card = this.gameBoard.getTopCardValue(location.zone, pileId)
                 break;
+            case "THROW":
+                break;
             default:
-                throw new Error("location corresponds to nothing...")       
+                console.log(location);
+                
+                throw new Error("you cannot ")       
         }
         return card
     }
@@ -115,11 +123,11 @@ export class GameData{
         const pileId: number|null = location.index
         switch (location.zone) {
             case "THROW":
-                this.players[this.playersTurns[this.playersTurns[0]]].addOnTop(card, location.zone)
+                this.players[this.playersTurns[0]].addOnTop(card, location.zone)
                 break;
             case "BIN":
             case "CRAPETTE":
-                this.players[this.playersTurns[this.playersTurns[1]]].addOnTop(card, location.zone)
+                this.players[this.playersTurns[1]].addOnTop(card, location.zone)
                 break;
             case "BOARD":
             case "ACE":
@@ -128,7 +136,6 @@ export class GameData{
             default:
                 throw new Error("location corresponds to nothing...")
         }
-        throw new Error("Illegal Move")
     }
 
     playTopCard(location: Location):Card{
@@ -137,7 +144,8 @@ export class GameData{
             case "BIN":
             case "CRAPETTE":
             case "DRAW":
-                return this.players[this.playersTurns[this.playersTurns[0]]].playTopValue(location.zone)
+                console.log("on joue la carte de: ", this.getPlayerName(this.playersTurns[0]))
+                return this.players[this.playersTurns[0]].playTopValue(location.zone)
             case "BOARD":
                 if (pileId !== null) return this.gameBoard.playTopValue(location.zone, pileId)
                 break;
@@ -152,37 +160,45 @@ export class GameData{
     }
 
     czechMove(card: Card, destination: Location){
-        const destinationCard = this.getTopCard(destination, this.playersTurns[0])
+        const destinationCard = this.getTopCard(destination, this.playersTurns[1]) // ATTENTION ICI
+        const destVal = Number(destinationCard?.value);
+        const cardVal = Number(card.value);
         if (destination.zone === "DRAW"){
             throw new Error("this card cannot be played here")
         }
         if (destination.zone === "ACE"){
             if (destinationCard !== null){
-                if (destinationCard.symbol !== card.symbol || destinationCard.value !== (card.value - 1)){
+                if (destinationCard.symbol !== card.symbol || destVal !== (cardVal - 1)){
                     throw new Error("you have to play the same symbol and value + 1")
                 }
             }
             else{
-                if (card.value != 1){
+                if (cardVal != 1){
                     throw new Error("you have to play an ace in an empty ACE spot")
                 }
             }
         }
         if (destination.zone === "BOARD" && destinationCard !== null){
-            if (destinationCard.value !== (card.value + 1)){
-                throw new Error("you have to play a lower card")
+            if (destVal !== (cardVal + 1)){
+                throw new Error("you have to play a -1 value card")
             }
             if ((destinationCard.symbol in ["clover", "spade"] && card.symbol in ["clover", "spade"] || (destinationCard.symbol in ["heart", "diamond"] && card.symbol in ["heart", "diamond"]))  ){
                 throw new Error("you have to alternate the colors")
             }
         }
         if (destination.zone === "BIN"){
-            if (destinationCard?.symbol !== card.symbol || (destinationCard.value !== card.value + 1 && destinationCard.value !== card.value - 1)){
+            if (destinationCard?.symbol !== card.symbol || (destVal !== (cardVal + 1) && destVal !== (cardVal - 1))){
                 throw new Error("you have to play the same symbol and neighbour value")
             }
         }
         if (destination.zone === "CRAPETTE"){
-            if (destinationCard?.symbol !== card.symbol || (destinationCard.value !== card.value + 1 && destinationCard.value !== card.value - 1)){
+            // console.log("symbol condition" , destinationCard?.symbol !== card.symbol);
+            // console.log('valeur dest', destVal, "valeur origin", cardVal);
+            
+            // console.log("val + 1 condition", destVal !== (cardVal + 1));
+            // console.log("val - 1 condition", destVal !== (cardVal - 1));
+            
+            if (destinationCard?.symbol !== card.symbol || (destVal !== (cardVal + 1) && destVal !== (cardVal - 1))){
                 throw new Error("you have to play the same symbol and neighbour value")
             }
         }
@@ -193,10 +209,12 @@ export class GameData{
 
     play(playerId: number, origin: Location, destination: Location){
         if (playerId !== this.playersTurns[0]){
-            if (playerId ! in this.playersTurns){
+            if (!this.playersTurns.includes(playerId)){
                 throw new Error("This player doesn't exists")
             }
-            throw new Error(`Its not the turn of ${this.players[playerId].getName()}`)
+            else{
+                throw new Error(`Its not the turn of ${this.players[this.playersTurns[1]].getName()}`)
+            }
         }
         // if (origin.zone === "THROW"){
         //     throw new Error("Illegal Move")
@@ -211,27 +229,31 @@ export class GameData{
         //     throw new Error('Illegal move')
         // }
 
-        const currentPlayer = this.playersTurns[0]
-        const player = this.players[playerId]
+        const currentPlayerId = this.playersTurns[0]
+        const player = this.players[currentPlayerId]
         
-        const originCard = this.getTopCard(origin, currentPlayer)
+        const originCard = this.getTopCard(origin, currentPlayerId)
+        console.log("ON REGARDE LA CARTE DE: ", this.getPlayerName(currentPlayerId));
         if (originCard === null){
             throw new Error("Illegal Move")
         }
+
+        // console.log("dest", destination);
         this.czechMove(originCard, destination)
 
-        this.addCard(destination,originCard,)
         this.playTopCard(origin)
+        this.addCard(destination,originCard)     
         
 
         if (origin.zone === "DRAW" && destination.zone === "THROW"){
             this.playersTurns[0] = this.playersTurns[1]
-            this.playersTurns[1] = playerId
-            this.players[playerId].resetforNextTurn()
+            this.playersTurns[1] = currentPlayerId
+            this.players[currentPlayerId].resetforNextTurn()
+            //this.players[this.playersTurns[1]].newTurn()
         }
 
         if (this.players[playerId].hasWon()){
-            this.winnerName = this.getPlayerName()
+            this.winnerName = this.getPlayerName(playerId)
             this.gameStatus = "won"
         }
 
