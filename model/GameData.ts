@@ -13,31 +13,58 @@ export class GameData{
 
     protected playersTurns: number[]
 
-    constructor(id1: number, nickname1: string, id2: number, nickname2: string){
-        const deckPlayer1 = new Deck()
-        deckPlayer1.shuffle()
-        const boardCards1 = deckPlayer1.drawXCards(4)
-        const player1 = new Player(nickname1, id1, deckPlayer1)
+    constructor(id1: number, nickname1: string, id2: number, nickname2: string, testDeck1?: Deck, testDeck2?: Deck){
+        if (!testDeck1 ||!testDeck2){
+            const deckPlayer1 = new Deck()
+            deckPlayer1.shuffle()
+            const boardCards1 = deckPlayer1.drawXCards(4)
+            const player1 = new Player(nickname1, id1, deckPlayer1)
 
-        const deckPlayer2 = new Deck()
-        deckPlayer2.shuffle()
-        const boardCards2 = deckPlayer2.drawXCards(4)
-        const player2 = new Player(nickname2, id2, deckPlayer2)
+            const deckPlayer2 = new Deck()
+            deckPlayer2.shuffle()
+            const boardCards2 = deckPlayer2.drawXCards(4)
+            const player2 = new Player(nickname2, id2, deckPlayer2)
 
-        const boardCards = boardCards1.concat(boardCards2)
-        this.gameBoard = new GameBoard(boardCards)
+            const boardCards = boardCards1.concat(boardCards2)
+            this.gameBoard = new GameBoard(boardCards)
 
-        this.players = {
-            [id1]: player1,
-            [id2]: player2,
+            this.players = {
+                [id1]: player1,
+                [id2]: player2,
+            }
+            const C1 = player1.getTopCardValue("CRAPETTE")
+            const C2 = player2.getTopCardValue("CRAPETTE")
+            if (C1 && C2 && C1.value >= C2.value){
+                this.playersTurns = [id1, id2]
+            }
+            else {
+                this.playersTurns = [id2, id1]
+            }
         }
-        const C1 = player1.getTopCardValue("CRAPETTE")
-        const C2 = player2.getTopCardValue("CRAPETTE")
-        if (C1 && C2 && C1.value >= C2.value){
-            this.playersTurns = [id1, id2]
-        }
-        else {
-            this.playersTurns = [id2, id1]
+        else{
+            const deckPlayer1 = testDeck1
+            const boardCards1 = deckPlayer1.drawXCards(4)
+            const player1 = new Player(nickname1, id1, deckPlayer1)
+
+            const deckPlayer2 = testDeck2
+            const boardCards2 = deckPlayer2.drawXCards(4)
+            const player2 = new Player(nickname2, id2, deckPlayer2)
+
+            const boardCards = boardCards1.concat(boardCards2)
+            this.gameBoard = new GameBoard(boardCards)
+
+            this.players = {
+                [id1]: player1,
+                [id2]: player2,
+            }
+            const C1 = player1.getTopCardValue("CRAPETTE")
+            const C2 = player2.getTopCardValue("CRAPETTE")
+            if (C1 && C2 && C1.value >= C2.value){
+                this.playersTurns = [id1, id2]
+            }
+            else {
+                this.playersTurns = [id2, id1]
+            }
         }
     }
 

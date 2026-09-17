@@ -12,14 +12,20 @@ export class Deck extends CardCollection {
     symbols: string[] = ["heart", "diamond", "clover", "spade"];
     values: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-    constructor() {
+    constructor(cards?: Card[]) {
         super();
-        for (const i of this.symbols) {
-            for (const j of this.values) {
-                this.cards.push(new Card(j, i));
+        if (cards){
+            this.cards = cards
+        }
+        else{
+            for (const i of this.symbols) {
+                for (const j of this.values) {
+                    this.cards.push(new Card(j, i));
+                }
             }
         }
     }
+
 
     shuffle():void{
         for (let i = this.cards.length - 1; i >= 0; i--) {
@@ -28,7 +34,7 @@ export class Deck extends CardCollection {
         }
     }
 
-    drawXCards(number : number):Card[]{
+    drawXCards(number : number):Card[]{    
         if (this.cards.length < number) throw new Error("Not enough cards in the deck");
         return this.cards.splice(0, number);
     }
@@ -62,7 +68,7 @@ export class Crapette extends CardCollection{
         if (this.cards.length === 0){
             return null
         }
-        else return this.cards[-1]
+        else return this.cards[this.cards.length -1]
     }
 
     playTopCard():Card{
@@ -117,7 +123,7 @@ export class Bin extends CardCollection{
         if (this.cards.length === 0){
             return null
         }
-        else return this.cards[-1]
+        else return this.cards[this.cards.length -1]
     }
 
     playTopCard():Card{
@@ -149,7 +155,7 @@ export class Draw extends CardCollection{
         if (this.cards.length === 0){
             return null
         }
-        else return this.cards[-1]
+        else return this.cards[this.cards.length -1]
     }
 
     playTopCard():Card{
@@ -204,7 +210,7 @@ export class AcePile extends CardCollection{
         if (this.cards.length === 0){
             return null
         }
-        else return this.cards[-1]
+        else return this.cards[this.cards.length -1]
     }
 }
 
@@ -236,7 +242,7 @@ export class BoardPile extends CardCollection{
         if (this.cards.length === 0){
             return null
         }
-        else return this.cards[-1]
+        else return this.cards[this.cards.length -1]
     }
 
     playTopCard():Card{
