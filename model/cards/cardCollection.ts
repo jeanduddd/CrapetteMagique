@@ -106,12 +106,13 @@ export class Bin extends CardCollection{
         if (topCard === null){
             throw new Error("Cannot put this card here")
         }
-
-        if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
-            this.cards.push(card)
-        }
         else{
-            throw new Error("Cannot put this card here")
+            if (topCard.symbol === card.symbol && (topCard.value === card.value + 1 || topCard.value === card.value - 1)){
+                this.cards.push(card)
+            }
+            else{
+                throw new Error("Cannot put this card here")
+            }
         }
     }
 
@@ -134,6 +135,7 @@ export class Bin extends CardCollection{
         if (!topCard){
             throw new Error("there is no card in the bin");
         }
+        this.played = true
         return topCard
     }
 
@@ -152,13 +154,16 @@ export class Draw extends CardCollection{
     }
 
     getTopCardValue():Card|null{
-        if (this.cards.length === 0){
+        if (this.cards.length === 0 || this.shown === false){
             return null
         }
         else return this.cards[this.cards.length -1]
     }
 
     playTopCard():Card{
+        if (this.shown === false){
+            throw new Error("card not shown yet...");
+        }
         const topCard = this.cards.pop()
         if (!topCard){
             throw new Error("there is no card in the draw");
@@ -197,12 +202,13 @@ export class AcePile extends CardCollection{
         if (topCard === null){
             this.cards.push(card)
         }
-        
-        if (topCard !== null && topCard.symbol === card.symbol && topCard.value === card.value - 1){
-            this.cards.push(card)
-        }
-        else{
-            throw new Error("Cannot put this card here")
+        else{               
+            if (topCard !== null && topCard.symbol === card.symbol && topCard.value === card.value - 1){
+                this.cards.push(card)
+            }
+            else{
+                throw new Error("Cannot put this card here")
+            }
         }
     }
 
@@ -229,12 +235,13 @@ export class BoardPile extends CardCollection{
         if (topCard === null){
             this.cards.push(card)
         }
-
-        if (topCard !== null && topCard.symbol !== card.symbol && topCard.value === card.value + 1){
-            this.cards.push(card)
-        }
-        else{
-            throw new Error("Cannot put this card here")
+        else {
+            if (topCard !== null && topCard.symbol !== card.symbol && topCard.value === card.value + 1){
+                this.cards.push(card)
+            }
+            else{
+                throw new Error("Cannot put this card here")
+            }
         }
     }
 
