@@ -1,8 +1,8 @@
 import { Player } from "./player/player"
 import { GameBoard } from "./gameBoard/gameBoard"
-import { BoardPile, Deck } from "./cards/cardCollection"
+import { AcePile, BoardPile, Deck } from "./cards/cardCollection"
 import { Card } from "./cards/card";
-import { Location } from "./IPlayCard";
+import { GameState, Location, ZoneName, PileData, CardData } from "@shared/IPlayCard";
 
 
 export class GameData{
@@ -80,7 +80,7 @@ export class GameData{
         return this.gameBoard.getAces()
     }
 
-    getRows():BoardPile[]{
+    getRows():(Card[]|null)[]{
         return this.gameBoard.getBoard()
     }
 
@@ -94,6 +94,115 @@ export class GameData{
 
     showDraw(){
         this.players[this.playersTurns[0]].switchDraw()
+    }
+
+    protected instanciateLocation(zone: ZoneName, idx: number|null):Location{
+        const loc: Location = {
+            zone: zone,
+            index: idx
+        }
+        return loc
+    }
+
+
+    private safelyToCardDataArray(card: Card | null): CardData[] {
+        if (card === null) return [];
+        return [{ value: card.value, symbol: card.symbol }];
+    }
+
+    private safelyToPileData(cards: (Card | null)[]): PileData[] {
+        const list: PileData[] = cards.map(card => {
+            
+            if (card === null) {
+                return {
+                    cardNumber: 0,
+                    cards: [] 
+                };
+            }
+            return {
+                cardNumber: 1,
+                cards: [{ value: card.value, symbol: card.symbol }]
+            };
+        });
+
+        return list;
+    }
+
+    private safelyToPileDataFromBoard(rows: (Card[]|null)[]): PileData[] {
+        const list: PileData[] = rows.map(row => {
+            if (row === null) {
+                return {
+                    cardNumber: 0,
+                    cards: [] 
+                };
+            }
+            return {
+                cardNumber: row.length,
+                cards: row.map(card => ({ 
+                    value: card.value, 
+                    symbol: card.symbol 
+                }))
+            };
+        });
+        return list;
+    }
+
+
+
+    getGameState(playerId: number): GameState{
+        if (!this.playersTurns.includes(playerId)){
+                throw new Error("This player doesn't exists")
+        }
+        const enemyId = this.playersTurns.filter(id => id !== playerId)[0]
+
+        const myTurn: boolean = playerId === this.playersTurns[0]
+
+        //my cards
+        const drawCard: Card|null = this.getTopCard(this.instanciateLocation("DRAW",null),playerId)
+        const draw: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(drawCard)
+        }
+        const crapetteCard: Card|null = this.getTopCard(this.instanciateLocation("CRAPETTE",null),playerId)
+        const crapette: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(crapetteCard)
+        }
+        const binCard: Card|null = this.getTopCard(this.instanciateLocation("BIN",null),playerId)
+        const bin: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(binCard)
+        }
+
+        //ennemy cards
+        const enemyCrapetteCard: Card|null = this.getTopCard(this.instanciateLocation("CRAPETTE",null),enemyId)
+        const enemyCrapette: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(enemyCrapetteCard)
+        }
+        const enemyBinCard: Card|null = this.getTopCard(this.instanciateLocation("BIN",null),enemyId)
+        const enemyBin: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(enemyBinCard)
+        }
+
+        //board
+        const acesPiles = this.getAcePiles()
+        const aces = this.safelyToPileData(acesPiles)
+
+        const boardPiles = this.getRows()
+        const board = this.safelyToPileDataFromBoard(boardPiles)
+
+        return {
+            myTurn: myTurn,
+            crapette: crapette,
+            enemyCrapette: enemyCrapette,
+            bin: bin,
+            enemyBin: enemyBin,
+            draw: draw,
+            aces: aces,
+            board: board
+        }
     }
 
     getTopCard(location: Location, playerId: number|null):Card|null{
