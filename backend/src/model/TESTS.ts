@@ -99,62 +99,62 @@ playATurn(whereToTake,whereToPlay)
 
 whereToTake = instanciateLocation("CRAPETTE", null) 
 whereToPlay = instanciateLocation("ACE", 3)
-playATurn(whereToTake, whereToPlay)//
+playATurn(whereToTake, whereToPlay)
 
 whereToPlay = instanciateLocation("ACE", 5)
-playATurn(whereToTake, whereToPlay)//
+playATurn(whereToTake, whereToPlay)
 
 whereToTake = instanciateLocation("CRAPETTE", null) 
-whereToPlay = instanciateLocation("ACE", 5)//
+whereToPlay = instanciateLocation("ACE", 5)
 playATurn(whereToTake,whereToPlay)
 
 whereToPlay = instanciateLocation("CRAPETTE", null)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 whereToTake = instanciateLocation("DRAW", null)
 whereToPlay = instanciateLocation("THROW", null)
-playATurn(whereToTake, whereToPlay)//
+playATurn(whereToTake, whereToPlay)
 
-showDraw()//
+showDraw()
 
 
-playATurn(whereToTake, whereToPlay)//
+playATurn(whereToTake, whereToPlay)
 
 console.log("player qui joue", game.getPlayingPlayerName());
 
 whereToTake = instanciateLocation("CRAPETTE", null) 
 whereToPlay = instanciateLocation("ACE", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 currentPlayer = 2
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 showDraw()
 showDraw()
 showDraw()//
 
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("BOARD", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 showDraw()
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("BIN", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 showDraw()
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("THROW", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 console.log("player qui joue", game.getPlayingPlayerName());
 currentPlayer = 1
 
 whereToTake = instanciateLocation("BIN", null) 
 whereToPlay = instanciateLocation("THROW", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
 whereToTake = instanciateLocation("BIN", null) 
 whereToPlay = instanciateLocation("BIN", 0)
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)
 
-playATurn(whereToTake,whereToPlay)//
+playATurn(whereToTake,whereToPlay)

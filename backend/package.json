@@ -1,0 +1,14 @@
+{
+  "name": "crapette-backend",
+  "version": "1.0.0",
+  "description": "MVC server for crapette game",
+  "license": "MIT",
+  "author": "Jean Vrignaud",
+  "type": "commonjs",
+  "main": "controller.js",
+  "scripts": {
+    "start": "node controller.js",
+    "dev": "tsx controller.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
