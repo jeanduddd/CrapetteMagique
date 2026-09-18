@@ -5,10 +5,10 @@
   "license": "MIT",
   "author": "Jean Vrignaud",
   "type": "commonjs",
-  "main": "controller.js",
+  "main": "./src/controller.ts",
   "scripts": {
-    "start": "node controller.js",
-    "dev": "tsx controller.js",
+    "start": "tsx ./src/controllerts",
+    "dev": "tsx watch ./src/controller.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -16,14 +16,12 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^26.6.1",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   },
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["../shared/*"]
-    }
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
