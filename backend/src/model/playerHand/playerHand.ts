@@ -1,6 +1,6 @@
 import { Crapette, Bin, Draw, Deck } from "../cards/cardCollection"
 import { Card } from "../cards/card"
-import { ZoneName } from "../IPlayCard"
+import { ZoneName } from "@shared/IPlayCard"
 
 export class PlayerHand{
     protected crapette: Crapette

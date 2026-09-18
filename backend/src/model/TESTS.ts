@@ -1,7 +1,7 @@
-import { GameData } from "./gameData";
+import { GameData } from "./GameData";
 import { Card } from "./cards/card";
 import { Deck } from "./cards/cardCollection";
-import { Location, ZoneName } from "./IPlayCard";
+import { Location, ZoneName } from "@shared/IPlayCard";
 
 
 ///USEFULL TEST FUNCTIONS

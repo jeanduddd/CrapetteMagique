@@ -1,7 +1,7 @@
 import { PlayerHand } from "../playerHand/playerHand"; 
 import { Deck } from "../cards/cardCollection"; 
 import { Card } from "../cards/card";
-import { ZoneName } from "../IPlayCard";
+import { ZoneName } from "@shared/IPlayCard";
 
 export class Player{
     protected playerHand: PlayerHand
