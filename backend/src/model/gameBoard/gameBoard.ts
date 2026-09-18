@@ -1,6 +1,6 @@
 import { AcePile, BoardPile } from "../cards/cardCollection"
 import { Card } from "../cards/card"
-import { ZoneName } from "../IPlayCard"
+import { ZoneName } from "@shared/IPlayCard"
 
 export class GameBoard{
     protected aceSpots: AcePile[]
@@ -68,8 +68,14 @@ export class GameBoard{
     }
 
 
-    getBoard():BoardPile[]{
-        return this.boardSpots
+    getBoard():(Card[]|null)[]{
+        return this.boardSpots.map(boardSpot => {
+            const cards = boardSpot.getCards()
+            if (cards === null) {
+                return null;
+            }
+            return cards;
+            })
     }
 
     getAces():(Card|null)[]{

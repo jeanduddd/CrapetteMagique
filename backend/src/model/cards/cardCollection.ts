@@ -259,4 +259,11 @@ export class BoardPile extends CardCollection{
         }
         return topCard
     }
+
+    getCards():Card[]|null{
+        if (this.cards.length === 0){
+            return null
+        }
+        return this.cards
+    }
 }
