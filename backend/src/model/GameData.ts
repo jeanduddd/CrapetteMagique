@@ -367,5 +367,4 @@ export class GameData{
         }
 
     }
-
 }
