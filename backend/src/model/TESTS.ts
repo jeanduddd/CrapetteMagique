@@ -66,8 +66,8 @@ function playATurn(whereToTake: Location, whereToPlay: Location){
     
 }
 
-function showDraw(){
-    game.showDraw()
+function showDraw(idx: number){
+    game.showDraw(idx)
     console.log("show draw");
     displayHandsState()
     console.log("end");
@@ -115,7 +115,7 @@ whereToTake = instanciateLocation("DRAW", null)
 whereToPlay = instanciateLocation("THROW", null)
 playATurn(whereToTake, whereToPlay)
 
-showDraw()
+showDraw(1)
 
 
 playATurn(whereToTake, whereToPlay)
@@ -128,20 +128,20 @@ playATurn(whereToTake,whereToPlay)
 
 currentPlayer = 2
 playATurn(whereToTake,whereToPlay)
-showDraw()
-showDraw()
-showDraw()//
+showDraw(2)
+showDraw(2)
+showDraw(2)//
 
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("BOARD", 0)
 playATurn(whereToTake,whereToPlay)
 
-showDraw()
+showDraw(2)
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("BIN", 0)
 playATurn(whereToTake,whereToPlay)
 
-showDraw()
+showDraw(2)
 whereToTake = instanciateLocation("DRAW", null) 
 whereToPlay = instanciateLocation("THROW", 0)
 playATurn(whereToTake,whereToPlay)
