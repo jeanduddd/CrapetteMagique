@@ -6,7 +6,7 @@ export interface Location {
 }
 
 export interface PlayRequest {
-    origine: Location;
+    origin: Location;
     destination: Location;
 }
 
@@ -28,6 +28,7 @@ export interface PileData {
 export interface GameState {
     myTurn: boolean;
     draw: PileData;
+    enemyDraw: PileData,
     bin: PileData;
     enemyBin: PileData;
     crapette: PileData;
