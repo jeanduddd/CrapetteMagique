@@ -92,7 +92,15 @@ export class GameData{
         return this.players[this.playersTurns[0]]
     }
 
-    showDraw(){
+    showDraw(playerId: number){
+        if (playerId !== this.playersTurns[0]){
+            if (!this.playersTurns.includes(playerId)){
+                throw new Error("This player doesn't exists")
+            }
+            else{
+                throw new Error(`Its not the turn of ${this.players[this.playersTurns[1]].getName()}`)
+            }
+        }
         this.players[this.playersTurns[0]].switchDraw()
     }
 
@@ -175,6 +183,11 @@ export class GameData{
         }
 
         //ennemy cards
+        const enemyDrawCard: Card|null = this.getTopCard(this.instanciateLocation("DRAW",null),enemyId)
+        const enemyDraw: PileData = {
+            cardNumber: 1,
+            cards: this.safelyToCardDataArray(enemyDrawCard)
+        }
         const enemyCrapetteCard: Card|null = this.getTopCard(this.instanciateLocation("CRAPETTE",null),enemyId)
         const enemyCrapette: PileData = {
             cardNumber: 1,
@@ -200,9 +213,12 @@ export class GameData{
             bin: bin,
             enemyBin: enemyBin,
             draw: draw,
+            enemyDraw:enemyDraw,
             aces: aces,
             board: board
         }
+
+        //TODO pb when return empty bin or draw, the size of it is set to 1 instead of 0... :(
     }
 
     getTopCard(location: Location, playerId: number|null):Card|null{
