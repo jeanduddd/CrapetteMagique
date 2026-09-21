@@ -1,44 +1,58 @@
-import { useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { type GameState } from '@shared/IPlayCard';
+import { useState } from "react"
+import { io, Socket } from "socket.io-client"
+import MenuScreen from "./screens/menu/MenuScreen"
+import WaitingScreen from "./screens/waiting/WaitingScreen"
+import type { GameState } from "@shared/IPlayCard"
 
-export default function App() {
-    const [vueCourante, setVueCourante] = useState<'MENU' | 'RECHERCHE' | 'JEU'>('MENU');
-    
+export default function App(){
+    const [view, setView] = useState<'MENU' | 'WAITING' | 'GAME' |'FULL' | 'WON' | 'LOST'>('MENU')
+
+    const [name, setName] = useState('')
+
     const [socket, setSocket] = useState<Socket | null>(null);
+
     const [gameState, setGameState] = useState<GameState | null>(null);
 
-    const lancerLaPartie = () => {
-        setVueCourante('RECHERCHE');
-        
-        const connexion = io('http://localhost:3001');
-        setSocket(connexion);
-
-        connexion.on('maj_plateau', (etatRecu: GameState) => {
-            setGameState(etatRecu);
-            setVueCourante('JEU');
+    const connectToServer = (playerID: string | null, playerName: string) => {
+        const connection = io('http://localhost:3001', {
+            auth: { sessionId: playerID, pseudo: playerName }
         });
+        
+        setSocket(connection);
+
+        connection.on('session', (donnees) => {
+            sessionStorage.setItem('joueurId', donnees.sessionId);
+        });
+
+        connection.on('wait', () => {
+            setView('WAITING');
+        });
+
+        connection.on('updateBoard', (etatRecu: GameState) => {
+            setGameState(etatRecu);
+            setView('GAME'); 
+        });
+
+        connection.on('roomFull', () => {           
+            setView('FULL'); 
+        });
+
+        connection.on('moveError', (message: string) => {
+            console.log(message);
+            //TODO change this to diplay an error in a component (like a chat idk)
+        })
+    };
+
+    const handleClicPlay = () => {
+        if (name.trim() === '') return alert("choose a name !");
+        setView('WAITING');
+        connectToServer(null, name); 
     };
 
     return (
-        <main className="app-container">
-            {vueCourante === 'MENU' && (
-                <div className="menu">
-                    <h1>Crapette Magique</h1>
-                    <button onClick={lancerLaPartie}>Jouer en ligne</button>
-                </div>
-            )}
-
-            {vueCourante === 'RECHERCHE' && (
-                <div className="chargement">
-                    <p>Connexion au serveur en cours...</p>
-                    <span className="spinner">🔄</span>
-                </div>
-            )}
-
-            {vueCourante === 'JEU' && gameState && socket && (
-                <></>
-            )}
-        </main>
-    );
+    <>
+        {view === 'MENU' && <MenuScreen name={name} handleNameChange={setName} handleClick={handleClicPlay}></MenuScreen>}
+        {view === 'WAITING' && <WaitingScreen></WaitingScreen>}
+    </>
+    )
 }
