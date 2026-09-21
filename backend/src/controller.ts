@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 
 const players = new Map();
 let game: GameData | null = null;
+const minuteursDeconnexion = new Map();
 
 io.on('connection', (socket) => {
     let sessionId = socket.handshake.auth.sessionId;
@@ -39,6 +40,35 @@ io.on('connection', (socket) => {
         io.to(data2.socketId).emit('updateBoard', game?.getGameState(id2));
     }
 
+    const gameWon = () => {
+        const won = game?.getStatus()
+        if (won === "won"){
+            const winnerId = game?.getWinnerId()
+            if (winnerId === null ){
+                throw new Error('Uh, its not normal... No winner id even if someone won the game...')
+            }
+            const timerId = setTimeout(() => {
+            }, 1000);
+            const inGamePlayers = Array.from(players);
+            const id1 = inGamePlayers[0][0];
+            const data1 = inGamePlayers[0][1];
+                
+            const id2 = inGamePlayers[1][0];
+            const data2 = inGamePlayers[1][1];
+
+            if (winnerId === id1){
+                io.to(data1.socketId).emit('won');
+                io.to(data2.socketId).emit('lost');
+            }
+            else{
+                io.to(data2.socketId).emit('won');
+                io.to(data1.socketId).emit('lost'); 
+            }
+            game = null
+            players.clear()
+        }
+    }
+
     if (!sessionId && players.size >= 2) {
         socket.emit('roomFull', { message: "the room is full..." });
         socket.disconnect();
@@ -53,6 +83,9 @@ io.on('connection', (socket) => {
         console.log(`player 1 added : ${pseudo}`);
     } else {
         const joueurExistant = players.get(sessionId);
+        clearTimeout(minuteursDeconnexion.get(sessionId));
+        minuteursDeconnexion.delete(sessionId);
+        console.log('reset timer');
         joueurExistant.socketId = socket.id;
     }
 
@@ -92,7 +125,6 @@ io.on('connection', (socket) => {
             const data1 = inGamePlayers[0][1];
             const data2 = inGamePlayers[1][1];
             console.log(`Here we go again : ${data1.pseudo} VS ${data2.pseudo}`);
-            
             sendGameState()
         }
     }
@@ -102,6 +134,7 @@ io.on('connection', (socket) => {
             console.log('play request recieved')
             game?.play(sessionId, playRequest.origin, playRequest.destination)
             sendGameState()
+            gameWon()
         }
         catch (e){
             socket.emit('moveError', {message: (e as Error).message})
@@ -120,13 +153,36 @@ io.on('connection', (socket) => {
     })
     
 
-
     socket.on('disconnect', () => {
-        //mettre un chrono, si la personne revient pas apres 1min,
-        //suppr la game et envoyer au boug qu'il a gagné
+        const id = socket.data.sessionId; 
+        console.log(`player idsconnected : ${id}`);
+        
+        const timer = setTimeout(() => {
+                minuteursDeconnexion.delete(id);
+
+                const inGamePlayers = Array.from(players);
+                const id1 = inGamePlayers[0][0];
+                const data1 = inGamePlayers[0][1];
+                
+                const id2 = inGamePlayers[1][0];
+                const data2 = inGamePlayers[1][1];
+
+                if (id === id1){
+                    io.to(data1.socketId).emit('wonByDefault');
+                }
+                else{
+                    io.to(data2.socketId).emit('wonByDefault');
+                }
+                game = null
+                players.clear()
+                console.log(`Player ${id} deleted`);
+            }, 100000);
+            minuteursDeconnexion.set(id, timer);
+        });
+        
 
     });
-});
+
 
 const PORT = 3001;
 server.listen(PORT, () => {
