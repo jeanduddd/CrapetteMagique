@@ -9,7 +9,7 @@ export class GameData{
     protected players: Record<string, Player> = {};
     protected gameBoard: GameBoard
     protected gameStatus: "playing"|"won" = "playing"
-    protected winnerName: string|null = null
+    protected winnerId: number|null = null
 
     protected playersTurns: number[]
 
@@ -72,8 +72,8 @@ export class GameData{
         return this.gameStatus
     }
 
-    getWinnerName():string|null{
-        return this.winnerName
+    getWinnerId():number|null{
+        return this.winnerId
     }
 
     getAcePiles():(Card|null)[]{
@@ -378,7 +378,7 @@ export class GameData{
         }
 
         if (this.players[playerId].hasWon()){
-            this.winnerName = this.getPlayerName(playerId)
+            this.winnerId = playerId
             this.gameStatus = "won"
         }
 
