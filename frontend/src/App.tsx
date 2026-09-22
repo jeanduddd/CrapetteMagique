@@ -6,9 +6,11 @@ import type { GameState } from "@shared/IPlayCard"
 import FullRoomScreen from "./screens/full/FullRoomScreen"
 import WonGameScreen from "./screens/won/WonGameScreen"
 import LostGameScreen from "./screens/lost/LostGameScreen"
+import DefaultWinGameScreen from "./screens/defaultWin/DefaultWinGameScreen"
+import Game from "./screens/game/Game"
 
 export default function App(){
-    const [view, setView] = useState<'MENU' | 'WAITING' | 'GAME' |'FULL' | 'WON' | 'LOST'>('LOST')
+    const [view, setView] = useState<'MENU' | 'WAITING' | 'GAME' |'FULL' | 'WON' | 'LOST' | 'DEFAULT'>('MENU')
 
     const [name, setName] = useState('')
 
@@ -52,9 +54,9 @@ export default function App(){
         connectToServer(null, name); 
     };
 
-    const backToMenuRoomFull = () => {
-        setView('MENU')
-    }
+    // const backToMenuRoomFull = () => {
+    //     setView('MENU')
+    // }
 
     const backToMenuAndDisconnect = () => {
         if (socket){
@@ -68,9 +70,11 @@ export default function App(){
     <>
         {view === 'MENU' && <MenuScreen name={name} handleNameChange={setName} handleClick={handleClicPlay}></MenuScreen>}
         {view === 'WAITING' && <WaitingScreen handleCancel={backToMenuAndDisconnect}></WaitingScreen>}
-        {view === 'FULL' && <FullRoomScreen backToMenu={backToMenuRoomFull}></FullRoomScreen>}
+        {view === 'FULL' && <FullRoomScreen backToMenu={backToMenuAndDisconnect}></FullRoomScreen>}
         {view === 'WON' && <WonGameScreen backToMenu={backToMenuAndDisconnect}></WonGameScreen>}
         {view === 'LOST' && <LostGameScreen backToMenu={backToMenuAndDisconnect}></LostGameScreen>}
+        {view === 'DEFAULT' && <DefaultWinGameScreen backToMenu={backToMenuAndDisconnect}></DefaultWinGameScreen>}
+        {view === 'GAME' && <Game gameState={gameState}></Game>}
     </>
     )
 }
