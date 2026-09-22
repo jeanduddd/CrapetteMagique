@@ -189,6 +189,13 @@ export class Draw extends CardCollection{
         this.shown = bool
     }
 
+    getDrawShown(): boolean | null {
+        if (this.cards.length === 0){
+            return null
+        }
+        return this.shown
+    }
+
 }
 
 export class AcePile extends CardCollection{

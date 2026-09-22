@@ -88,6 +88,10 @@ export class PlayerHand{
         this.draw.switchDrawShown()
     }
 
+    getDrawShown(): boolean|null {
+        return this.draw.getDrawShown()
+    }
+
     hasWon():boolean{
         if ((this.crapette.getCount() + this.bin.getCount() + this.draw.getCount()) === 0){
             return true

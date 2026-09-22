@@ -164,38 +164,40 @@ export class GameData{
         const enemyId = this.playersTurns.filter(id => id !== playerId)[0]
 
         const myTurn: boolean = playerId === this.playersTurns[0]
-
+        const myDrawShown: boolean | null  = this.players[playerId].getDrawShown()
+        const enemyDrawShown: boolean | null  = this.players[enemyId].getDrawShown()
+        
         //my cards
         const drawCard: Card|null = this.getTopCard(this.instanciateLocation("DRAW",null),playerId)
         const draw: PileData = {
-            cardNumber: 1,
+            cardNumber: myDrawShown === null ? 0 : myDrawShown === false ? -1 : 1,
             cards: this.safelyToCardDataArray(drawCard)
         }
         const crapetteCard: Card|null = this.getTopCard(this.instanciateLocation("CRAPETTE",null),playerId)
         const crapette: PileData = {
-            cardNumber: 1,
+            cardNumber: crapetteCard === null ? 0 : 1,
             cards: this.safelyToCardDataArray(crapetteCard)
         }
         const binCard: Card|null = this.getTopCard(this.instanciateLocation("BIN",null),playerId)
         const bin: PileData = {
-            cardNumber: 1,
+            cardNumber: binCard === null ? 0 : 1,
             cards: this.safelyToCardDataArray(binCard)
         }
 
         //ennemy cards
         const enemyDrawCard: Card|null = this.getTopCard(this.instanciateLocation("DRAW",null),enemyId)
         const enemyDraw: PileData = {
-            cardNumber: 1,
+            cardNumber: enemyDrawShown === null ? 0 : enemyDrawShown === false ? -1 : 1,
             cards: this.safelyToCardDataArray(enemyDrawCard)
         }
         const enemyCrapetteCard: Card|null = this.getTopCard(this.instanciateLocation("CRAPETTE",null),enemyId)
         const enemyCrapette: PileData = {
-            cardNumber: 1,
+            cardNumber: enemyCrapetteCard === null ? 0 : 1,
             cards: this.safelyToCardDataArray(enemyCrapetteCard)
         }
         const enemyBinCard: Card|null = this.getTopCard(this.instanciateLocation("BIN",null),enemyId)
         const enemyBin: PileData = {
-            cardNumber: 1,
+            cardNumber: enemyBinCard === null ? 0 : 1,
             cards: this.safelyToCardDataArray(enemyBinCard)
         }
 
@@ -217,8 +219,6 @@ export class GameData{
             aces: aces,
             board: board
         }
-
-        //TODO pb when return empty bin or draw, the size of it is set to 1 instead of 0... :(
     }
 
     getTopCard(location: Location, playerId: number|null):Card|null{
