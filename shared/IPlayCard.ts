@@ -15,11 +15,6 @@ export interface CardData {
     symbol: string;
 }
 
-export interface CardCollectionData {
-    nombreDeCartes: number;
-    cartesVisibles?: CardData[]; 
-}
-
 export interface PileData {
     cardNumber: number;
     cards?: CardData[];
