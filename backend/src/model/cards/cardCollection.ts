@@ -9,7 +9,7 @@ export class CardCollection{
 }
 
 export class Deck extends CardCollection {
-    symbols: string[] = ["heart", "diamond", "clover", "spade"];
+    symbols: string[] = ["heart", "diamond", "club", "spade"];
     values: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
     constructor(cards?: Card[]) {

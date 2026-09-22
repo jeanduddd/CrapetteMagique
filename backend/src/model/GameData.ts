@@ -307,7 +307,7 @@ export class GameData{
             if (destVal !== (cardVal + 1)){
                 throw new Error("you have to play a -1 value card")
             }
-            if ((destinationCard.symbol in ["clover", "spade"] && card.symbol in ["clover", "spade"] || (destinationCard.symbol in ["heart", "diamond"] && card.symbol in ["heart", "diamond"]))  ){
+            if ((destinationCard.symbol in ["club", "spade"] && card.symbol in ["club", "spade"] || (destinationCard.symbol in ["heart", "diamond"] && card.symbol in ["heart", "diamond"]))  ){
                 throw new Error("you have to alternate the colors")
             }
         }
