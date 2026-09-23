@@ -1,4 +1,4 @@
-const styles = {
+const GameStyles = {
     screen: {
         backgroundColor: 'darkgreen',
         margin: 0,
@@ -9,7 +9,12 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    border: {
+        border: 1,
+        borderColor: "black",
+        borderStyle:"dashed",
     }
 } as const
 
-export default styles
+export default GameStyles
