@@ -1,19 +1,14 @@
-const styles = {
-    hand1: {
+const handStyles = {
+    hand: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: window.innerWidth/7
+        gap: window.innerWidth/20,
+        height: window.innerHeight/6,
+        width:"100vw",
     },
-    hand2: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: window.innerWidth/5
-    }
 } as const
 
-export default styles
+export default handStyles
 
