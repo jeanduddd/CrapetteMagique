@@ -6,8 +6,8 @@ import LeftBoardLine from "./LeftBoardLine"
 const LeftBoardPiles = ({leftPiles}: BoardPilesProps) => {
     return (
         <div style={{...boardPilesStyles.boardPiles, ...GameStyles.border}}>
-            {leftPiles.map( (pile) => 
-                <div style={{...boardPilesStyles.boardPile, ...GameStyles.border}}>
+            {leftPiles.map( (pile, idx) => 
+                <div key={idx} style={{...boardPilesStyles.boardPile, ...GameStyles.border}}>
                 <LeftBoardLine cards={pile}></LeftBoardLine>
             </div>
             )}
