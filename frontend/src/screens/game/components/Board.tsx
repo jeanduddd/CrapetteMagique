@@ -2,6 +2,7 @@ import type { BoardProps } from "../properties/boardProps"
 import boardStyles from "../style/boardStyle"
 import Aces from "./Aces"
 import LeftBoardPiles from "./LeftBoardPiles"
+import RightBoardPiles from "./RightBoardPiles"
 
 const Board = ({aces, boardPiles}: BoardProps) => {
 
@@ -13,7 +14,9 @@ const Board = ({aces, boardPiles}: BoardProps) => {
             <div style={{...boardStyles.aces}}>
                 <Aces aces={aces}></Aces>
             </div>
-            <div style={{...boardStyles.boardPiles}}></div>
+            <div style={{...boardStyles.boardPiles}}>
+                <RightBoardPiles rightPiles={[boardPiles[4], boardPiles[5], boardPiles[6], boardPiles[7]]}></RightBoardPiles>
+            </div>
         </div>
     )
 }
