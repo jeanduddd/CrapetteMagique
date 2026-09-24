@@ -7,7 +7,7 @@ const RightBoardLine = ({cards}: BoardLineProps) => {
     if (cards.cardNumber === 0){
         return (
             <div style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-start', alignItems: "center"}}>
-                <img style={{...cardStyles.card, display: "flex"}} src={`card_back.png`}></img>
+                <img style={{...cardStyles.card, display: "flex"}} src={`empty_spot.png`}></img>
             </div>
         )
     }
