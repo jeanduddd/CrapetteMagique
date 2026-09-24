@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { io, Socket } from "socket.io-client"
 import MenuScreen from "./screens/menu/MenuScreen"
 import WaitingScreen from "./screens/waiting/WaitingScreen"
@@ -27,12 +27,21 @@ function instanciatePileData(nb: number, cards?: CardData[]):PileData{
 }
 
 export default function App(){
-    const [view, setView] = useState<'MENU' | 'WAITING' | 'GAME' |'FULL' | 'WON' | 'LOST' | 'DEFAULT'>('GAME')
-
-    const [name, setName] = useState('')
-
-    const [socket, setSocket] = useState<Socket | null>(null);
-
+    
+    const [name, setName] = useState<string | null>(sessionStorage.getItem('pseudo'))
+    
+    const [socket, setSocket] = useState<Socket | null>(() => {
+        const playerId = sessionStorage.getItem('playerId');
+        const name = sessionStorage.getItem('pseudo');
+        
+        if (playerId) {
+            return io('http://localhost:3001', { 
+                auth: { sessionId: playerId, pseudo: name } 
+            });
+        }
+        return null; 
+    });
+    
     const draw: PileData = instanciatePileData(-1,[])
     const enemyDraw: PileData = instanciatePileData(-1,[])
     const bin: PileData = instanciatePileData(0,[])
@@ -41,7 +50,7 @@ export default function App(){
     const enemyCrapette: PileData = instanciatePileData(1,[instanciateCard(9,"club")])
     const aces: PileData[] = [instanciatePileData(0), instanciatePileData(1,[instanciateCard(1,"spade")]), instanciatePileData(0), instanciatePileData(0), instanciatePileData(1,[instanciateCard(4,"diamond")]), instanciatePileData(0), instanciatePileData(0), instanciatePileData(0)]
     const board: PileData[] = [instanciatePileData(3,[instanciateCard(13,"heart"),instanciateCard(12,"club"),instanciateCard(11,"diamond")]),instanciatePileData(0),instanciatePileData(1,[instanciateCard(3,"heart")]),instanciatePileData(0),instanciatePileData(2,[instanciateCard(3,"spade"), instanciateCard(2,"heart")]),instanciatePileData(0),instanciatePileData(1,[instanciateCard(11,"diamond")]),instanciatePileData(1,[instanciateCard(4,"club")])]
-
+    
     const newGameState: GameState = {
         myTurn: true,
         crapette: crapette,
@@ -53,52 +62,103 @@ export default function App(){
         aces:aces,
         board:board
     }
+    
+    const [gameState, setGameState] = useState<GameState | null>(null); // tester avec newGameState
+    
+    const [view, setView] = useState<'MENU' | 'WAITING' | 'GAME' |'FULL' | 'WON' | 'LOST' | 'DEFAULT'>(() => {
+        return gameState ? 'GAME' : 'MENU';
+    });
 
-    const [gameState, setGameState] = useState<GameState | null>(newGameState);// remettre à null...
-
+    const [playerId, setPlayerId] = useState<null | string>(sessionStorage.getItem('playerId'))
 
     const connectToServer = (playerID: string | null, playerName: string) => {
+        sessionStorage.setItem('pseudo', playerName );
         const connection = io('http://localhost:3001', {
             auth: { sessionId: playerID, pseudo: playerName }
         });
         
         setSocket(connection);
+    };
 
-        connection.on('session', (donnees) => {
-            sessionStorage.setItem('joueurId', donnees.sessionId);
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on('session', (donnees) => {
+            sessionStorage.setItem('playerId', donnees.sessionId);
         });
-
-        connection.on('wait', () => {
+        
+        socket.on('wait', () => {
             setView('WAITING');
         });
-
-        connection.on('updateBoard', (etatRecu: GameState) => {
+        
+        socket.on('updateBoard', (etatRecu: GameState) => {           
             setGameState(etatRecu);
             setView('GAME'); 
         });
-
-        connection.on('roomFull', () => {           
-            setView('FULL'); 
+        
+        socket.on('roomFull', () => {           
+            setView('FULL');
+            sessionStorage.removeItem('playerId')
         });
-
-        connection.on('moveError', (message: string) => {
+        
+        socket.on('sessionExpired', () => {
+            //TODO display error message       
+            setView('MENU');
+        });
+                
+        socket.on('moveError', (message: string) => {
             console.log(message);
             //TODO change this to diplay an error in a component (like a chat idk)
         })
-    };
+        
+        socket.on('won', () => {
+            setView('WON')
+            socket?.disconnect()
+            sessionStorage.removeItem('sessionId')
+            sessionStorage.removeItem('playerId')
+            setName('')
+            setPlayerId(null)
+        })
+        
+        socket.on('lost', () => {
+            setView('LOST')
+            socket?.disconnect()
+            sessionStorage.removeItem('sessionId');
+            sessionStorage.removeItem('playerId')
+            setName(''); 
+            setPlayerId(null)
+        })
+
+        socket.on('wonByDefault', () => {
+            setView('DEFAULT')
+            socket?.disconnect()
+            sessionStorage.removeItem('sessionId')
+            sessionStorage.removeItem('playerId')
+            setName('')
+            setPlayerId(null)
+        })
+
+        return () => {
+            socket.off('session');
+            socket.off('wait');
+            socket.off('updateBoard');
+            socket.off('roomFull');
+            socket.off('sessionExpired');
+            socket.off('moveError');
+            socket.off('won');
+            socket.off('lost');
+            socket.off('wonByDefault');
+        };
+    }, [socket]);
 
     const handleClicPlay = () => {
-        if (name.trim() === '') return alert("choose a name !");
+        if (name?.trim() === '' || name === null) return alert("choose a name !");
         setView('WAITING');
-        connectToServer(null, name); 
+        connectToServer(playerId, name); 
     };
 
-    // const backToMenuRoomFull = () => {
-    //     setView('MENU')
-    // }
-
     const backToMenuAndDisconnect = () => {
-        if (socket){
+        if (socket){           
             socket.disconnect()
         }
         setSocket(null)
@@ -107,7 +167,7 @@ export default function App(){
    
     return (
     <>
-        {view === 'MENU' && <MenuScreen name={name} handleNameChange={setName} handleClick={handleClicPlay}></MenuScreen>}
+        {view === 'MENU' && <MenuScreen name={name ?? ''} handleNameChange={setName} handleClick={handleClicPlay}></MenuScreen>}
         {view === 'WAITING' && <WaitingScreen handleCancel={backToMenuAndDisconnect}></WaitingScreen>}
         {view === 'FULL' && <FullRoomScreen backToMenu={backToMenuAndDisconnect}></FullRoomScreen>}
         {view === 'WON' && <WonGameScreen backToMenu={backToMenuAndDisconnect}></WonGameScreen>}
