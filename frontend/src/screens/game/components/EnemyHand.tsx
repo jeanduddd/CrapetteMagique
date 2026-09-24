@@ -13,12 +13,3 @@ const EnemyHand = ({crapette, bin, draw}: HandsProps) => {
 }
 
 export default EnemyHand
-
-/*
-<div>
-            {crapette.cardNumber === 0 ? <></> : <img src={`${crapette.cards?.[0].symbol}_${crapette.cards?.[0].value}`}></img>}
-            {bin.cardNumber === 0 ? <></> : <img src={`${bin.cards?.[0].symbol}_${crapette.cards?.[0].value}`}></img>}
-            {draw.cardNumber === -1 && <img src={'card_back.png'}></img>}
-            {draw.cardNumber === 0 ? <></> : <img src={`${bin.cards?.[0].symbol}_${crapette.cards?.[0].value}`}></img>}
-        </div>
-*/

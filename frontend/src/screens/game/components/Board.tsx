@@ -19,7 +19,3 @@ const Board = ({aces, boardPiles}: BoardProps) => {
 }
 
 export default Board
-
-/*            <LeftBoardPiles></LeftBoardPiles>
-            <Aces></Aces>
-            <RightBoardPiles></RightBoardPiles> */
