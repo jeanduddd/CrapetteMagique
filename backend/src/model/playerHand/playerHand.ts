@@ -72,12 +72,19 @@ export class PlayerHand{
         this.draw.setDrawShown(false)
     }
 
+    resetBin():void{
+        const drawLength = this.draw.getCount()
+        if (drawLength === 0 ){
+            const cards = this.bin.resetDeck()
+            this.draw.initialize(cards)
+        }
+    }
+
     beginingOfTurn():void{
         let cards: Card[] = []
         if (this.draw.getCount() === 0 ){
             cards = this.bin.resetDeck()
             this.draw.initialize(cards)
-            this.draw.shuffle()
         }
         if (this.crapette.getCount() === 0 ){
             this.draw.setDrawShown(true)

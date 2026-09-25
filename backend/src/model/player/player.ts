@@ -30,6 +30,10 @@ export class Player{
         this.playerHand.switchDrawShown()
     }
 
+    resetBin():void{
+        this.playerHand.resetBin()
+    }    
+
     getDrawShown():boolean|null{
         return this.playerHand.getDrawShown()
     }

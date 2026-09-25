@@ -374,13 +374,13 @@ export class GameData{
             this.playersTurns[0] = this.playersTurns[1]
             this.playersTurns[1] = currentPlayerId
             this.players[currentPlayerId].resetforNextTurn()
-            //this.players[this.playersTurns[1]].newTurn()
         }
+
+        this.players[playerId].resetBin()
 
         if (this.players[playerId].hasWon()){
             this.winnerId = playerId
             this.gameStatus = "won"
         }
-
     }
 }
