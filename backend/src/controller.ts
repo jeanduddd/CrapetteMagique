@@ -173,11 +173,17 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     const id = socket.data.sessionId;
+    const socketId = socket.id
     console.log(`player disconnected : ${id}`);
 
     if (disconnectionTimer.has(id)) {
       clearTimeout(disconnectionTimer.get(id));
       console.log(`Ancien minuteur annulé pour ${id}`);
+    }
+
+    if (socketId != players.get(id).socketId){
+      console.log("ignore disconnection, wrong socket");
+      return     
     }
 
     if (!game) {
