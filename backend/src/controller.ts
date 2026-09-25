@@ -13,11 +13,16 @@ const app = express();
 const server = createServer(app);
 
 const distPath = path.join(__dirname, 'dist')
+
 app.use(express.static(distPath))
 
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+
+app.get('/', (req,res)=>{
+  res.sendFile(path.join(distPath, 'index.html'))
+})
 
 const players = new Map();
 let game: GameData | null = null;
