@@ -5,4 +5,5 @@ export type GameProps = {
     setOrigin: (arg0: Location) => void
     setDestination: (arg0: Location) => void
     origin: Location | null
+    revealDraw: () => void
 }
