@@ -6,4 +6,5 @@ export type HandsProps = {
     draw: PileData,
     setOrigin: (arg0: Location) => void,
     setDestination: (arg0: Location) => void
+    revealDraw: () => void
 }
