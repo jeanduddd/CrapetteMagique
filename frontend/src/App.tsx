@@ -131,12 +131,12 @@ export default function App() {
 //   }
 
   const setOriginDrag = (origin: Location) => {
-    console.log(origin);    
+    console.log("origin: ", origin);    
     setOrigin(origin)
   }
 
   const setDestinationDrop = (destination: Location) => {
-    console.log(destination);
+    console.log("destination: ", destination);
     setDestination(destination)
   }
 
@@ -295,7 +295,7 @@ export default function App() {
           backToMenu={backToMenuAndDisconnect}
         ></DefaultWinGameScreen>
       )}
-      {view === "GAME" && <Game setOrigin={setOriginDrag} setDestination={setDestinationDrop} gameState={gameState}></Game>}
+      {view === "GAME" && <Game origin={origin} setOrigin={setOriginDrag} setDestination={setDestinationDrop} gameState={gameState}></Game>}
     </>
   );
 }
