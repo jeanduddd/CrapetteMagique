@@ -2,7 +2,7 @@ import type { BoardLineProps } from "../properties/boardLineProps"
 import BoardLineStyle from "../style/boardLineStyle"
 import cardStyles from "../style/cardStyle"
 
-const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex}: BoardLineProps) => {
+const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex, isOrigin}: BoardLineProps) => {
 
     
     const dragStart = () => {
@@ -22,15 +22,14 @@ const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex}: BoardLinePro
     }
 
     const pileData = cards.cards || []
-    const maxId = pileData.length
 
     return (
-        <div onDrop={dragEnd} onDragOver={(e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
+        <div onDrop={isOrigin ? () => {} : dragEnd} onDragOver={isOrigin? () => {} : (e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
             {[...pileData].reverse().map((card, idx) => (
-                idx === maxId ? 
+                idx === 0 ? 
                 <img draggable="true" onDragStart={dragStart} style={{...cardStyles.card, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : - 0.9 * (window.innerHeight / 6) + 0.9 * (window.innerHeight / 6) * 0.3 }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
                 :
-                <img style={{...cardStyles.card, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : - 0.9 * (window.innerHeight / 6) + 0.9 * (window.innerHeight / 6) * 0.3 }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
+                <img draggable={false} style={{...cardStyles.card, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : - 0.9 * (window.innerHeight / 6) + 0.9 * (window.innerHeight / 6) * 0.3 }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
             ))}
         </div>
 
