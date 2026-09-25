@@ -7,8 +7,6 @@ import GameStyles from "./style/GameScreenStyle"
 
 const Game = ({gameState, setOrigin, setDestination, origin, revealDraw} : GameProps) => {
 
-    //haut, bas, cartes à gauche, as, cartes à droite
-
     if (gameState === null){
         return <p>uh there is a pb...</p>
     }
