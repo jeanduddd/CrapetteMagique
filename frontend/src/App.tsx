@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import MenuScreen from "./screens/menu/MenuScreen";
 import WaitingScreen from "./screens/waiting/WaitingScreen";
-import type { CardData, GameState, PileData, Location } from "@shared/IPlayCard";
+import type { CardData, GameState, PileData, Location, PlayRequest } from "@shared/IPlayCard";
 import FullRoomScreen from "./screens/full/FullRoomScreen";
 import WonGameScreen from "./screens/won/WonGameScreen";
 import LostGameScreen from "./screens/lost/LostGameScreen";
@@ -138,6 +138,20 @@ export default function App() {
   const setDestinationDrop = (destination: Location) => {
     console.log("destination: ", destination);
     setDestination(destination)
+    if (origin !== null){
+        const playRequest: PlayRequest = {
+            origin: origin,
+            destination: destination
+        }
+        socket?.emit('playCard', playRequest)
+        console.log('I PLAYYY');
+        
+    }
+  }
+
+  const revealDraw = () => {
+    console.log('revealDraw');
+    socket?.emit('revealDraw')
   }
 
   useEffect(() => {
@@ -295,7 +309,7 @@ export default function App() {
           backToMenu={backToMenuAndDisconnect}
         ></DefaultWinGameScreen>
       )}
-      {view === "GAME" && <Game origin={origin} setOrigin={setOriginDrag} setDestination={setDestinationDrop} gameState={gameState}></Game>}
+      {view === "GAME" && <Game revealDraw={revealDraw} origin={origin} setOrigin={setOriginDrag} setDestination={setDestinationDrop} gameState={gameState}></Game>}
     </>
   );
 }
