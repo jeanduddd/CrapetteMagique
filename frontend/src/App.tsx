@@ -31,7 +31,9 @@ function instanciatePileData(nb: number, cards?: CardData[]): PileData {
   return pile;
 }
 
-const socket = io("http://localhost:3001", {
+const SERVER_URL = import.meta.env.PROD ? undefined : "http://localhost:3001"
+
+const socket = io(SERVER_URL, {
   autoConnect: false,
 });
 
