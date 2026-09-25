@@ -18,6 +18,8 @@ app.use(express.static(distPath))
 
 const io = new Server(server, {
   cors: { origin: "*" },
+  pingInterval: 10000,
+  pingTimeout: 5000,
 });
 
 app.get('/', (req,res)=>{
@@ -72,9 +74,6 @@ io.on("connection", (socket) => {
       }
       game = null;
       players.clear();
-      //faut reset le nom de session chez le client ??? pas besoin non?
-      //pcq ca check si c dans la liste des joueurs... par contre...
-      //qd ca sera les +ieurs games, faudra reset au cas ou je pense
     }
   };
 
@@ -130,19 +129,11 @@ io.on("connection", (socket) => {
 
       console.log(`Begining of the game : ${data1.pseudo} VS ${data2.pseudo}`);
 
-      const deck = new Deck();
-      const testCards: Card[] = [new Card(1, "diamond"), new Card(3, "spade")];
-      const finalDeck = testCards.concat(
-        deck.drawXCards(52 - testCards.length),
-      );
-
       game = new GameData(
         id1,
         data1.pseudo,
         id2,
         data2.pseudo,
-        new Deck([...finalDeck]),
-        new Deck([...finalDeck]),
       );
 
       io.to(data1.socketId).emit("updateBoard", game.getGameState(id1));
@@ -207,7 +198,7 @@ io.on("connection", (socket) => {
       game = null;
       players.clear();
       console.log(`${id} abandonned`);
-    }, 100000);
+    }, 60000);
     if (game) {
       disconnectionTimer.set(id, timer);
     } else {
