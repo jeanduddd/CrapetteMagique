@@ -6,11 +6,18 @@ import { Card } from "./model/cards/card";
 import { Deck } from "./model/cards/cardCollection";
 import { GameData } from "./model/GameData";
 import * as dotenv from 'dotenv'
+import path from "node:path";
 
 dotenv.config()
 const app = express();
 const server = createServer(app);
 
+const distPath = path.join(__dirname, 'dist')
+app.use(express.static(distPath))
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'))
+})
 const io = new Server(server, {
   cors: { origin: "*" },
 });
