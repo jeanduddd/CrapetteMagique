@@ -12,7 +12,7 @@ dotenv.config()
 const app = express();
 const server = createServer(app);
 
-const distPath = path.join(__dirname, 'dist')
+const distPath = path.join(__dirname, '../dist')
 
 app.use(express.static(distPath))
 
