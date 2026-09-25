@@ -1,5 +1,7 @@
-import type { GameState } from "@shared/IPlayCard"
+import type { GameState, Location } from "@shared/IPlayCard"
 
 export type GameProps = {
-    gameState: GameState | null
+    gameState: GameState | null,
+    setOrigin: (arg0: Location) => void
+    setDestination: (arg0: Location) => void
 }
