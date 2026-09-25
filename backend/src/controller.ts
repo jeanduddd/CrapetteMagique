@@ -174,6 +174,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const id = socket.data.sessionId;
     const socketId = socket.id
+
     console.log(`player disconnected : ${id}`);
 
     if (disconnectionTimer.has(id)) {
@@ -181,7 +182,8 @@ io.on("connection", (socket) => {
       console.log(`Ancien minuteur annulé pour ${id}`);
     }
 
-    if (socketId != players.get(id).socketId){
+    const playerData = players.get(sessionId)
+    if (playerData && socketId !== playerData.socketId){
       console.log("ignore disconnection, wrong socket");
       return     
     }
