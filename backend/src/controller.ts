@@ -89,20 +89,20 @@ io.on("connection", (socket) => {
     const existingPlayer = players.get(sessionId);
 
     if (!existingPlayer) {
-        console.log(`player ${sessionId} does not exist`);
-        socket.emit("sessionExpired");
-        return; 
+      console.log(`player ${sessionId} does not exist`);
+      socket.emit("sessionExpired");
+      return;
     }
     if (disconnectionTimer.has(sessionId)) {
-        clearTimeout(disconnectionTimer.get(sessionId));
-        disconnectionTimer.delete(sessionId);
-        console.log(`reset timer:  ${sessionId}`);
+      clearTimeout(disconnectionTimer.get(sessionId));
+      disconnectionTimer.delete(sessionId);
+      console.log(`reset timer:  ${sessionId}`);
     }
     existingPlayer.socketId = socket.id;
     if (game) {
-        socket.emit("updateBoard", game.getGameState(sessionId));
+      socket.emit("updateBoard", game.getGameState(sessionId));
     } else {
-        socket.emit("sessionExpired");
+      socket.emit("sessionExpired");
     }
   }
 
@@ -143,11 +143,15 @@ io.on("connection", (socket) => {
       io.to(data1.socketId).emit("updateBoard", game.getGameState(id1));
       io.to(data2.socketId).emit("updateBoard", game.getGameState(id2));
     } else {
-      const inGamePlayers = Array.from(players);
-      const data1 = inGamePlayers[0][1];
-      const data2 = inGamePlayers[1][1];
-      console.log(`Here we go again : ${data1.pseudo} VS ${data2.pseudo}`);
-      sendGameState();
+      try {
+        const inGamePlayers = Array.from(players);
+        const data1 = inGamePlayers[0][1];
+        const data2 = inGamePlayers[1][1];
+        console.log(`Here we go again : ${data1.pseudo} VS ${data2.pseudo}`);
+        sendGameState();
+      } catch (e) {
+        socket.emit("moveError", { message: (e as Error).message });
+      }
     }
   }
 
@@ -172,14 +176,13 @@ io.on("connection", (socket) => {
     }
   });
 
-
   socket.on("disconnect", () => {
     const id = socket.data.sessionId;
     console.log(`player disconnected : ${id}`);
 
     if (disconnectionTimer.has(id)) {
-        clearTimeout(disconnectionTimer.get(id));
-        console.log(`Ancien minuteur annulé pour ${id}`);
+      clearTimeout(disconnectionTimer.get(id));
+      console.log(`Ancien minuteur annulé pour ${id}`);
     }
 
     const timer = setTimeout(() => {
@@ -200,11 +203,10 @@ io.on("connection", (socket) => {
       players.clear();
       console.log(`${id} abandonned`);
     }, 100000);
-    if (game){
-        disconnectionTimer.set(id, timer);
-    }
-    else{
-        players.delete(id);
+    if (game) {
+      disconnectionTimer.set(id, timer);
+    } else {
+      players.delete(id);
     }
     //mettre un chrono, si la personne revient pas apres 1min,
     //suppr la game et envoyer au boug qu'il a gagné
