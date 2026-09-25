@@ -6,7 +6,6 @@ import { Card } from "./model/cards/card";
 import { Deck } from "./model/cards/cardCollection";
 
 import { GameData } from "./model/GameData";
-import { log } from "node:console";
 
 const app = express();
 const server = createServer(app);
