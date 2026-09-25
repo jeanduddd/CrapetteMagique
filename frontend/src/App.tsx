@@ -25,10 +25,7 @@ export default function App() {
     sessionStorage.getItem("pseudo"),
   );
 
-  const [gameState, setGameState] = useState<GameState | null>(() => {
-    const savedState = sessionStorage.getItem("gameState");
-    return savedState ? JSON.parse(savedState) : null
-  });
+  const [gameState, setGameState] = useState<GameState | null>(null)
 
   const [view, setView] = useState<
     "MENU" | "WAITING" | "GAME" | "FULL" | "WON" | "LOST" | "DEFAULT"
@@ -75,7 +72,6 @@ export default function App() {
 
     socket.on("updateBoard", (receivedState: GameState) => {
       setGameState(receivedState);
-      sessionStorage.setItem("gameState", JSON.stringify(receivedState))
       console.log("received correctly");
 
       setView("GAME");
@@ -101,7 +97,6 @@ export default function App() {
       socket?.disconnect();
       sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
-      sessionStorage.removeItem("gameState");
       setName("");
       setPlayerId(null);
     });
@@ -111,7 +106,6 @@ export default function App() {
       socket?.disconnect();
       sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
-      sessionStorage.removeItem("gameState");
       setName("");
       setPlayerId(null);
     });
@@ -121,7 +115,6 @@ export default function App() {
       socket?.disconnect();
       sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
-      sessionStorage.removeItem("gameState");
       setName("");
       setPlayerId(null);
     });
