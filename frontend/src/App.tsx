@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 import MenuScreen from "./screens/menu/MenuScreen";
 import WaitingScreen from "./screens/waiting/WaitingScreen";
-import type { CardData, GameState, PileData, Location, PlayRequest } from "@shared/IPlayCard";
+import type {
+  CardData,
+  GameState,
+  PileData,
+  Location,
+  PlayRequest,
+} from "@shared/IPlayCard";
 import FullRoomScreen from "./screens/full/FullRoomScreen";
 import WonGameScreen from "./screens/won/WonGameScreen";
 import LostGameScreen from "./screens/lost/LostGameScreen";
@@ -25,22 +31,14 @@ function instanciatePileData(nb: number, cards?: CardData[]): PileData {
   return pile;
 }
 
+const socket = io("http://localhost:3001", {
+  autoConnect: false,
+});
+
 export default function App() {
   const [name, setName] = useState<string | null>(
     sessionStorage.getItem("pseudo"),
   );
-
-  const [socket, setSocket] = useState<Socket | null>(() => {
-    const playerId = sessionStorage.getItem("playerId");
-    const name = sessionStorage.getItem("pseudo");
-
-    if (playerId) {
-      return io("http://localhost:3001", {
-        auth: { sessionId: playerId, pseudo: name },
-      });
-    }
-    return null;
-  });
 
   const draw: PileData = instanciatePileData(-1, []);
   const enemyDraw: PileData = instanciatePileData(-1, []);
@@ -92,7 +90,7 @@ export default function App() {
     board: board,
   };
 
-  const [gameState, setGameState] = useState<GameState | null>(newGameState); // tester avec newGameState
+  const [gameState, setGameState] = useState<GameState | null>(null); // tester avec newGameState
 
   const [view, setView] = useState<
     "MENU" | "WAITING" | "GAME" | "FULL" | "WON" | "LOST" | "DEFAULT"
@@ -106,11 +104,8 @@ export default function App() {
 
   const connectToServer = (playerID: string | null, playerName: string) => {
     sessionStorage.setItem("pseudo", playerName);
-    const connection = io("http://localhost:3001", {
-      auth: { sessionId: playerID, pseudo: playerName },
-    });
-
-    setSocket(connection);
+    socket.auth = { sessionId: playerId, pseudo: name };
+    socket.connect();
   };
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -123,53 +118,14 @@ export default function App() {
     setErrorKey((prev) => prev + 1);
   };
 
-  const [origin, setOrigin] = useState<null|Location>(null)
-  const [destination, setDestination] = useState<null|Location>(null)
+  useEffect(() => {
+    const playerId = sessionStorage.getItem("playerId");
+    const name = sessionStorage.getItem("pseudo");
 
-//   const play(){
-    //faier un pla request et envoyer
-//   }
-
-  const setOriginDrag = (origin: Location) => {
-    console.log("origin: ", origin);    
-    setOrigin(origin)
-  }
-
-  const setDestinationDrop = (destination: Location) => {
-    console.log("destination: ", destination);
-    setDestination(destination)
-    if (origin !== null){
-        const playRequest: PlayRequest = {
-            origin: origin,
-            destination: destination
-        }
-        socket?.emit('playCard', playRequest)
-        console.log('I PLAYYY');
-        
+    if (playerId && !socket.connected) {
+      socket.auth = { sessionId: playerId, pseudo: name };
+      socket.connect();
     }
-  }
-
-  const revealDraw = () => {
-    console.log('revealDraw');
-    socket?.emit('revealDraw')
-  }
-
-  useEffect(() => {
-    if (errorMessage === null) return;
-
-    const timerShow = setTimeout(() => setErrorVisible(true), 10);
-    const timerVisible = setTimeout(() => setErrorVisible(false), 1000);
-    const timerMessage = setTimeout(() => setErrorMessage(null), 4000);
-
-    return () => {
-      clearTimeout(timerShow);
-      clearTimeout(timerVisible);
-      clearTimeout(timerMessage);
-    };
-  }, [errorKey, errorMessage]);
-
-  useEffect(() => {
-    if (!socket) return;
 
     socket.on("session", (donnees) => {
       sessionStorage.setItem("playerId", donnees.sessionId);
@@ -181,6 +137,8 @@ export default function App() {
 
     socket.on("updateBoard", (etatRecu: GameState) => {
       setGameState(etatRecu);
+      console.log("bien recu");
+
       setView("GAME");
     });
 
@@ -194,9 +152,9 @@ export default function App() {
       setView("MENU");
     });
 
-    socket.on("moveError", (message: string) => {
-      console.log(message);
-      triggerError(message);
+    socket.on("moveError", (data) => {
+      console.log(data.message);
+      triggerError(data.message);
     });
 
     socket.on("won", () => {
@@ -237,10 +195,52 @@ export default function App() {
       socket.off("lost");
       socket.off("wonByDefault");
     };
-  }, [socket]);
+  }, []);
+
+  const [origin, setOrigin] = useState<null | Location>(null);
+  const [destination, setDestination] = useState<null | Location>(null);
+
+
+  const setOriginDrag = (origin: Location) => {
+    console.log("origin: ", origin);
+    setOrigin(origin);
+  };
+
+  const setDestinationDrop = (destination: Location) => {
+    console.log("destination: ", destination);
+    setDestination(destination);
+    if (origin !== null) {
+      const playRequest: PlayRequest = {
+        origin: origin,
+        destination: destination,
+      };
+      socket?.emit("playCard", playRequest);
+      console.log("I PLAYYY");
+    }
+  };
+
+  const revealDraw = () => {
+    console.log("revealDraw");
+    socket?.emit("revealDraw");
+  };
+
+  useEffect(() => {
+    if (errorMessage === null) return;
+
+    const timerShow = setTimeout(() => setErrorVisible(true), 10);
+    const timerVisible = setTimeout(() => setErrorVisible(false), 1000);
+    const timerMessage = setTimeout(() => setErrorMessage(null), 4000);
+
+    return () => {
+      clearTimeout(timerShow);
+      clearTimeout(timerVisible);
+      clearTimeout(timerMessage);
+    };
+  }, [errorKey, errorMessage]);
 
   const handleClicPlay = () => {
-    if (name?.trim() === "" || name === null) return triggerError("You must choose a name...")
+    if (name?.trim() === "" || name === null)
+      return triggerError("You must choose a name...");
     setView("WAITING");
     connectToServer(playerId, name);
   };
@@ -249,7 +249,7 @@ export default function App() {
     if (socket) {
       socket.disconnect();
     }
-    setSocket(null);
+    socket.disconnect();
     setView("MENU");
   };
 
@@ -309,7 +309,15 @@ export default function App() {
           backToMenu={backToMenuAndDisconnect}
         ></DefaultWinGameScreen>
       )}
-      {view === "GAME" && <Game revealDraw={revealDraw} origin={origin} setOrigin={setOriginDrag} setDestination={setDestinationDrop} gameState={gameState}></Game>}
+      {view === "GAME" && (
+        <Game
+          revealDraw={revealDraw}
+          origin={origin}
+          setOrigin={setOriginDrag}
+          setDestination={setDestinationDrop}
+          gameState={gameState}
+        ></Game>
+      )}
     </>
   );
 }
