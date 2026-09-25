@@ -5,7 +5,7 @@ const aceLineStyle = {
         height: (window.innerHeight/6),
         alignItems: 'center',
         justifyContent: 'center',
-        gap: (window.innerWidth/6) / 7,
+        gap: (window.innerWidth/4) / 8,
         margin: 0,
         padding: 0
     }
