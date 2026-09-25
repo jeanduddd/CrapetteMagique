@@ -3,7 +3,6 @@ import MyHand from "./components/MyHand"
 import type { GameProps } from "./properties/gameProps"
 import styles from "./style/GameScreenStyle"
 import Board from "./components/Board"
-import GameStyles from "./style/GameScreenStyle"
 
 const Game = ({gameState, setOrigin, setDestination, origin, revealDraw} : GameProps) => {
 
@@ -16,13 +15,13 @@ const Game = ({gameState, setOrigin, setDestination, origin, revealDraw} : GameP
 
     return (
         <div style={styles.screen}>
-            <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
+            <div style={{height: handSize, width: '100vw'}}>
                 <EnemyHand revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.enemyCrapette} bin={gameState.enemyBin} draw={gameState.enemyDraw}></EnemyHand>
             </div>
-            <div style={{height: boardSize, width: '100vw', ...GameStyles.border}}>
+            <div style={{height: boardSize, width: '100vw'}}>
                 <Board origin={origin} setOrigin={setOrigin} setDestination={setDestination} aces={gameState.aces} boardPiles={gameState.board}></Board>
             </div>
-            <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
+            <div style={{height: handSize, width: '100vw'}}>
                 <MyHand revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
             </div>
         </div>
