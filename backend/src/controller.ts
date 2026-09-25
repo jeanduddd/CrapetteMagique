@@ -85,8 +85,7 @@ io.on("connection", (socket) => {
 
   if (!sessionId || !players.has(sessionId)) {
     sessionId = Math.random().toString(36).substring(2, 10);
-    socket.emit("session", { sessionId });
-
+    socket.emit("session", { sessionId : sessionId });
     players.set(sessionId, { pseudo: pseudo, socketId: socket.id });
     console.log(`player 1 added : ${pseudo}`);
   } else {
@@ -181,6 +180,10 @@ io.on("connection", (socket) => {
       console.log(`Ancien minuteur annulé pour ${id}`);
     }
 
+    if (!game) {
+      players.delete(id);
+      return
+    }
     const timer = setTimeout(() => {
       disconnectionTimer.delete(id);
 
@@ -199,11 +202,8 @@ io.on("connection", (socket) => {
       players.clear();
       console.log(`${id} abandonned`);
     }, 60000);
-    if (game) {
-      disconnectionTimer.set(id, timer);
-    } else {
-      players.delete(id);
-    }
+    disconnectionTimer.set(id, timer);
+
     //mettre un chrono, si la personne revient pas apres 1min,
     //suppr la game et envoyer au boug qu'il a gagné
     //si les 2 sont déco suppr d'un coup?? peut etre pas... siya eu une coupure.
