@@ -2,25 +2,38 @@ import type { BoardLineProps } from "../properties/boardLineProps"
 import BoardLineStyle from "../style/boardLineStyle"
 import cardStyles from "../style/cardStyle"
 
-const LeftBoardLine = ({cards}: BoardLineProps) => {
+const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex}: BoardLineProps) => {
 
+    
+    const dragStart = () => {
+        setOrigin({ zone:"BOARD", index: myIndex });
+    }
+    
+    const dragEnd = () => {
+        setDestination( { zone:"BOARD", index: myIndex})
+    }
+    
     if (cards.cardNumber === 0){
         return (
-            <div style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
-                <img style={{...cardStyles.card, display: "flex"}} src={`empty_spot.png`}></img>
+            <div onDrop={dragEnd} onDragOver={(e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
+                <img draggable={false} style={{...cardStyles.card, display: "flex"}} src={`empty_spot.png`}></img>
             </div>
         )
     }
 
     const pileData = cards.cards || []
+    const maxId = pileData.length
 
     return (
-        <div style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
+        <div onDrop={dragEnd} onDragOver={(e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
             {[...pileData].reverse().map((card, idx) => (
+                idx === maxId ? 
+                <img draggable="true" onDragStart={dragStart} style={{...cardStyles.card, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : - 0.9 * (window.innerHeight / 6) + 0.9 * (window.innerHeight / 6) * 0.3 }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
+                :
                 <img style={{...cardStyles.card, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : - 0.9 * (window.innerHeight / 6) + 0.9 * (window.innerHeight / 6) * 0.3 }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
             ))}
-
         </div>
+
     )
 }
 
