@@ -1,5 +1,6 @@
-import type { PileData } from "@shared/IPlayCard"
+import type { PileData, Location } from "@shared/IPlayCard"
 
 export type AceProps = {
-    aces: PileData[]
+    aces: PileData[],
+    setDestination: (arg0: Location) => void
 }
