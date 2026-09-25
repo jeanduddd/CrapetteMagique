@@ -4,9 +4,10 @@ import { Server } from "socket.io";
 import { PlayRequest } from "@shared/IPlayCard";
 import { Card } from "./model/cards/card";
 import { Deck } from "./model/cards/cardCollection";
-
 import { GameData } from "./model/GameData";
+import * as dotenv from 'dotenv'
 
+dotenv.config()
 const app = express();
 const server = createServer(app);
 
@@ -214,7 +215,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT
 server.listen(PORT, () => {
   console.log(`Serveur running on port ${PORT}`);
 });
