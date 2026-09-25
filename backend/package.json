@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "./src/controller.ts",
   "scripts": {
-    "start": "tsx ./src/controllers",
+    "start": "tsx ./src/controller.ts",
     "dev": "tsx watch ./src/controller.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
