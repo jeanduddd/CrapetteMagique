@@ -19,10 +19,6 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-app.get("/", (req, res) => {
-  res.send("<h1>Serveur Crapette Opérationnel</h1>");
-});
-
 const players = new Map();
 let game: GameData | null = null;
 const disconnectionTimer = new Map();
