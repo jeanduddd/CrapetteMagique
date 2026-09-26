@@ -2,30 +2,30 @@ import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import MenuScreen from "./screens/menu/MenuScreen";
 import WaitingScreen from "./screens/waiting/WaitingScreen";
-import type {
-  GameState,
-  Location,
-  PlayRequest,
-} from "@shared/IPlayCard";
+import type { GameState, Location, PlayRequest } from "@shared/IPlayCard";
 import FullRoomScreen from "./screens/full/FullRoomScreen";
 import WonGameScreen from "./screens/won/WonGameScreen";
 import LostGameScreen from "./screens/lost/LostGameScreen";
 import DefaultWinGameScreen from "./screens/defaultWin/DefaultWinGameScreen";
 import Game from "./screens/game/Game";
+import { useWindowSize } from "./screenSize";
 
-const SERVER_URL = import.meta.env.PROD ? undefined : "http://localhost:3001"
+const SERVER_URL = import.meta.env.PROD ? undefined : "http://localhost:3001";
 
 const socket = io(SERVER_URL, {
   autoConnect: false,
 });
 
 export default function App() {
-    
+
+  const [width, height] = useWindowSize();
+  console.log(width, height)
+
   const [name, setName] = useState<string | null>(
     sessionStorage.getItem("pseudo"),
   );
 
-  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [gameState, setGameState] = useState<GameState | null>(null);
 
   const [view, setView] = useState<
     "MENU" | "WAITING" | "GAME" | "FULL" | "WON" | "LOST" | "DEFAULT"
@@ -135,7 +135,6 @@ export default function App() {
   const [origin, setOrigin] = useState<null | Location>(null);
   //const [destination, setDestination] = useState<null | Location>(null);
 
-
   const setOriginDrag = (origin: Location) => {
     console.log("origin: ", origin);
     setOrigin(origin);
@@ -210,7 +209,7 @@ export default function App() {
             color: "#FFFFFF",
             backgroundColor: "#7F1D1D",
             padding: "12px 30px",
-            borderRadius: "30px",
+            borderRadius: "30px", // changer le style ici pour faire +ou moins grand
             boxShadow: "0 4px 6px rgba(0,0,0,0.5)",
             fontWeight: "bold",
             fontFamily: "sans-serif",
