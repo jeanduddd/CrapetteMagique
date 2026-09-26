@@ -26,7 +26,7 @@ const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex, isOrigin}: Bo
     
     if (cards.cardNumber === 0){
         return (
-            <div onDrop={dragEnd} onDragOver={(e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, width: (width/8) * 3, height: (height/6), display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
+            <div onDrop={dragEnd} onDragEnter={(e) => e.preventDefault()} onDragOver={(e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, width: (width/8) * 3, height: (height/6), display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
                 <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height: cardHeight, display: "flex"}} src={`empty_spot.png`}></img>
             </div>
         )
@@ -35,7 +35,7 @@ const LeftBoardLine = ({cards, setOrigin, setDestination, myIndex, isOrigin}: Bo
     const pileData = cards.cards || []
 
     return (
-        <div onDrop={isOrigin ? () => {} : dragEnd} onDragOver={isOrigin? () => {} : (e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, width: (width/8) * 3, height: (height/6), display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
+        <div onDrop={isOrigin ? () => {} : dragEnd} onDragEnter={(e) => e.preventDefault()} onDragOver={isOrigin? () => {} : (e) => {e.preventDefault()}} style={{...BoardLineStyle.boardLine, width: (width/8) * 3, height: (height/6), display:"flex", flexDirection:'row', justifyContent:'flex-end', alignItems: "center"}}>
             {[...pileData].reverse().map((card, idx) => (
                 idx === 0 ? 
                 <img onContextMenu={(e) => e.preventDefault()} draggable="true" onDragStart={dragStart} style={{...cardStyles.card, height: cardHeight, position: "relative", zIndex: 15-idx,  marginLeft: idx === 0 ? 0 : cardGap }} key={idx} src={`${card.symbol}_${card.value}.png`}></img>
