@@ -187,6 +187,10 @@ export default function App() {
     setView("MENU");
   };
 
+  const fontSize = Math.min(height, width) * 0.03
+  const paddingVert = Math.min(height, width) * 0.02
+  const paddingHor = Math.min(height, width) * 0.06
+
   return (
     <>
       {
@@ -205,15 +209,15 @@ export default function App() {
               errorVisible === false
                 ? "opacity 3s ease-in-out"
                 : "opacity 0.2s ease-out",
-
+            textAlign: 'center',
             color: "#FFFFFF",
             backgroundColor: "#7F1D1D",
-            padding: "12px 30px",
-            borderRadius: "30px", // changer le style ici pour faire +ou moins grand
+            padding: `${paddingVert}px ${paddingHor}px`,
+            borderRadius: "1.5em",
             boxShadow: "0 4px 6px rgba(0,0,0,0.5)",
             fontWeight: "bold",
             fontFamily: "sans-serif",
-            fontSize: 20,
+            fontSize: fontSize,
           }}
         >
           {errorMessage}
