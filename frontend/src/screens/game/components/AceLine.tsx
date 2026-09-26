@@ -10,8 +10,8 @@ const AceLine = ({firstAce, secondAce, setDestination, indexes}: AceLineProps) =
 
     return (
         <div style={{...aceLineStyle.aceLine}}>
-            <img draggable={false} onDrop={() => dragEnd(indexes[0])} onDragOver={(e) => {e.preventDefault()}} style={cardStyles.card} src={firstAce.cardNumber === 0 ? "empty_spot.png" : `${firstAce.cards?.[0].symbol}_${firstAce.cards?.[0].value}.png`}></img>
-            <img draggable={false} onDrop={() => dragEnd(indexes[1])} onDragOver={(e) => {e.preventDefault()}} style={cardStyles.card} src={secondAce.cardNumber === 0 ? "empty_spot.png" : `${secondAce.cards?.[0].symbol}_${secondAce.cards?.[0].value}.png`}></img>
+            <img onContextMenu={(e) => e.preventDefault()} draggable={false} onDrop={() => dragEnd(indexes[0])} onDragOver={(e) => {e.preventDefault()}} style={cardStyles.card} src={firstAce.cardNumber === 0 ? "empty_spot.png" : `${firstAce.cards?.[0].symbol}_${firstAce.cards?.[0].value}.png`}></img>
+            <img onContextMenu={(e) => e.preventDefault()} draggable={false} onDrop={() => dragEnd(indexes[1])} onDragOver={(e) => {e.preventDefault()}} style={cardStyles.card} src={secondAce.cardNumber === 0 ? "empty_spot.png" : `${secondAce.cards?.[0].symbol}_${secondAce.cards?.[0].value}.png`}></img>
         </div>
     )
 }

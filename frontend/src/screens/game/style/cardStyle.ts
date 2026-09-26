@@ -1,6 +1,7 @@
 const cardStyles = {
     card: {
-        height: '90%'
+        height: '90%',
+        touchAction: 'none'
     }
 }
 
