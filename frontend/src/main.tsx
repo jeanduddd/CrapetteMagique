@@ -7,7 +7,8 @@ import "mobile-drag-drop/default.css";
 
 
 polyfill({
-  dragImageCenterOnTouch: true 
+  dragImageCenterOnTouch: true,
+  forceApply: true
 });
 
 window.addEventListener( 'touchmove', function() {}, {passive: false});

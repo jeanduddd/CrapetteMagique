@@ -12,10 +12,6 @@ body, html, #root {
     animation-iteration-count: infinite;
 }
 
-.dnd-poly-drag-image {
-    pointer-events: none !important;
-}
-
 @keyframes fall {
     0% {
         transform: translateY(-10vh) rotate(0deg);
