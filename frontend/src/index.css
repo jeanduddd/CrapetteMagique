@@ -7,7 +7,6 @@ body, html, #root {
 
 .fallingCard {
     position: absolute;
-    top: -150px;
     animation-name: fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
@@ -19,7 +18,7 @@ body, html, #root {
         opacity: 1;
     }
     100% {
-        transform: translateY(130vh) rotate(360deg);
+        transform: translateY(140vh) rotate(360deg);
         opacity: 1;
     }
 }

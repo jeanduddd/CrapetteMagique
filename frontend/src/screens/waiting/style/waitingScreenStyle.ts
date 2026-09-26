@@ -31,7 +31,6 @@ const styles = {
         color: 'white',
         backgroundColor: '#ff2e35',
         position: 'absolute',
-        padding: '10px 20px',
         cursor: 'pointer',
         border: 'none',
         borderRadius: '0px 0px 5px 0px',
