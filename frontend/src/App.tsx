@@ -79,11 +79,16 @@ export default function App() {
 
     socket.on("roomFull", () => {
       setView("FULL");
+      socket?.disconnect();
       sessionStorage.removeItem("playerId");
+      setPlayerId(null)
     });
 
-    socket.on("sessionExpired", () => {
+    socket.on("sessionExpired", () => {      
       triggerError("Your session has expired");
+      socket?.disconnect();
+      sessionStorage.removeItem("playerId");
+      setPlayerId(null)
       setView("MENU");
     });
 
@@ -95,7 +100,6 @@ export default function App() {
     socket.on("won", () => {
       setView("WON");
       socket?.disconnect();
-      sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
       setName("");
       setPlayerId(null);
@@ -104,7 +108,6 @@ export default function App() {
     socket.on("lost", () => {
       setView("LOST");
       socket?.disconnect();
-      sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
       setName("");
       setPlayerId(null);
@@ -113,7 +116,6 @@ export default function App() {
     socket.on("wonByDefault", () => {
       setView("DEFAULT");
       socket?.disconnect();
-      sessionStorage.removeItem("sessionId");
       sessionStorage.removeItem("playerId");
       setName("");
       setPlayerId(null);
