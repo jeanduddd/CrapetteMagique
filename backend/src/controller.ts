@@ -211,11 +211,6 @@ io.on("connection", (socket) => {
       console.log(`${id} abandonned`);
     }, 60000);
     disconnectionTimer.set(id, timer);
-
-    //mettre un chrono, si la personne revient pas apres 1min,
-    //suppr la game et envoyer au boug qu'il a gagné
-    //si les 2 sont déco suppr d'un coup?? peut etre pas... siya eu une coupure.
-    //Et puis le bus final c de faire +ieurs games en parallèle donc pas besoin de liberer le serveur
   });
 });
 
