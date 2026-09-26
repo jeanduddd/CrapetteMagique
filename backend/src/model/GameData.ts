@@ -371,12 +371,15 @@ export class GameData{
         
 
         if (origin.zone === "DRAW" && destination.zone === "THROW"){
+            this.players[this.playersTurns[1]].resetBin()
             this.playersTurns[0] = this.playersTurns[1]
             this.playersTurns[1] = currentPlayerId
             this.players[currentPlayerId].resetforNextTurn()
         }
 
-        this.players[playerId].resetBin()
+        if (destination.zone !== "THROW"){
+            this.players[currentPlayerId].resetBin()
+        }
 
         if (this.players[playerId].hasWon()){
             this.winnerId = playerId
