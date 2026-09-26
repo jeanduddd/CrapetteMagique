@@ -10,6 +10,8 @@ polyfill({
   dragImageCenterOnTouch: true 
 });
 
+window.addEventListener( 'touchmove', function() {}, {passive: false});
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
