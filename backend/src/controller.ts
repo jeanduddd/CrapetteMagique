@@ -83,6 +83,11 @@ io.on("connection", (socket) => {
     return;
   }
 
+  if (sessionId && !players.has(sessionId)){
+    socket.emit('sessionExpired')
+    return;
+  }
+
   if (!sessionId || !players.has(sessionId)) {
     sessionId = Math.random().toString(36).substring(2, 10);
     socket.emit("session", { sessionId : sessionId });
