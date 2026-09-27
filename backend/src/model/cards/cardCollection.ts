@@ -97,7 +97,7 @@ export class Bin extends CardCollection{
             return this.cards.splice(0, 1);
         }
         else {
-            return this.cards.splice(0, this.cards.length-1);
+            return this.cards.splice(0, this.cards.length-1).reverse();
         }
     }
 
