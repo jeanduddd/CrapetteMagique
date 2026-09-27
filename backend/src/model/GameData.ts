@@ -98,7 +98,7 @@ export class GameData{
                 throw new Error("This player doesn't exists")
             }
             else{
-                throw new Error(`Its not the turn of ${this.players[this.playersTurns[1]].getName()}`)
+                throw new Error(`Its not your turn`)
             }
         }
         this.players[this.playersTurns[0]].switchDraw()
@@ -238,8 +238,7 @@ export class GameData{
                 break;
             default:
                 console.log(location);
-                
-                throw new Error("you cannot ")       
+                throw new Error("This location doesn't exist...")       
         }
         return card
     }
@@ -259,7 +258,7 @@ export class GameData{
                 if (pileId !== null) this.gameBoard.addOnTop(card, location.zone, pileId)
                 break;
             default:
-                throw new Error("location corresponds to nothing...")
+                throw new Error("This location doesn't exist...")
         }
     }
 
@@ -275,7 +274,7 @@ export class GameData{
                 if (pileId !== null) return this.gameBoard.playTopValue(location.zone, pileId)
                 break;
             default:
-                throw new Error("location corresponds to nothing...")
+                throw new Error("This location doesn't exist...")
         }
         throw new Error("Illegal Move")
     }
@@ -289,37 +288,37 @@ export class GameData{
         const destVal = Number(destinationCard?.value);
         const cardVal = Number(card.value);
         if (destination.zone === "DRAW"){
-            throw new Error("this card cannot be played here")
+            throw new Error("Cannot place a card there")
         }
         if (destination.zone === "ACE"){
             if (destinationCard !== null){
                 if (destinationCard.symbol !== card.symbol || destVal !== (cardVal - 1)){
-                    throw new Error("you have to play the same symbol and value + 1")
+                    throw new Error("Must be the next card of this symbol")
                 }
             }
             else{
                 if (cardVal != 1){
-                    throw new Error("you have to play an ace in an empty ACE spot")
+                    throw new Error("Must be an ace in an empty ace spot")
                 }
             }
         }
 
         if (destination.zone === "BOARD" && destinationCard !== null){
             if (destVal !== (cardVal + 1)){
-                throw new Error("you have to play a -1 value card")
+                throw new Error("Must be one value lower")
             }
             if ((["club", "spade"].includes(destinationCard.symbol) && ["club", "spade"].includes(card.symbol) || (["heart", "diamond"].includes(destinationCard.symbol) && ["heart", "diamond"].includes(card.symbol)))){
-                throw new Error("you have to alternate the colors")
+                throw new Error("Must alternate the colors")
             }
         }
         if (destination.zone === "BIN"){
             if (destinationCard?.symbol !== card.symbol || (destVal !== (cardVal + 1) && destVal !== (cardVal - 1))){
-                throw new Error("you have to play the same symbol and neighbour value")
+                throw new Error("Must be the same symbol and neighbour value")
             }
         }
         if (destination.zone === "CRAPETTE"){
             if (destinationCard?.symbol !== card.symbol || (destVal !== (cardVal + 1) && destVal !== (cardVal - 1))){
-                throw new Error("you have to play the same symbol and neighbour value")
+                throw new Error("Must be the same symbol and neighbour value")
             }
         }
     }
@@ -333,17 +332,17 @@ export class GameData{
                 throw new Error("This player doesn't exists")
             }
             else{
-                throw new Error(`Its not the turn of ${this.players[this.playersTurns[1]].getName()}`)
+                throw new Error(`Its not your turn`)
             }
         }
         // if (origin.zone === "THROW"){
         //     throw new Error("Illegal Move")
         // }
         if (origin.zone !== "DRAW" && destination.zone === "THROW"){
-            throw new Error('Illegal move')
+            throw new Error('You can only throw your draw')
         }
         if (origin.zone === "ACE" ){
-            throw new Error("Illegal Move")
+            throw new Error("Cannot play a card from an ace spot")
         }
         // if (destination.zone === "DRAW"){
         //     throw new Error('Illegal move')
@@ -355,7 +354,7 @@ export class GameData{
         const originCard = this.getTopCard(origin, currentPlayerId)
         console.log("ON REGARDE LA CARTE DE: ", this.getPlayerName(currentPlayerId));
         if (originCard === null){
-            throw new Error("Illegal Move")
+            throw new Error("No origin to play ?")
         }
 
         // console.log("dest", destination);
