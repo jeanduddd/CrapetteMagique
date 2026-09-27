@@ -303,11 +303,12 @@ export class GameData{
                 }
             }
         }
+
         if (destination.zone === "BOARD" && destinationCard !== null){
             if (destVal !== (cardVal + 1)){
                 throw new Error("you have to play a -1 value card")
             }
-            if ((destinationCard.symbol in ["club", "spade"] && card.symbol in ["club", "spade"] || (destinationCard.symbol in ["heart", "diamond"] && card.symbol in ["heart", "diamond"]))  ){
+            if ((["club", "spade"].includes(destinationCard.symbol) && ["club", "spade"].includes(card.symbol) || (["heart", "diamond"].includes(destinationCard.symbol) && ["heart", "diamond"].includes(card.symbol)))){
                 throw new Error("you have to alternate the colors")
             }
         }
@@ -317,12 +318,6 @@ export class GameData{
             }
         }
         if (destination.zone === "CRAPETTE"){
-            // console.log("symbol condition" , destinationCard?.symbol !== card.symbol);
-            // console.log('valeur dest', destVal, "valeur origin", cardVal);
-            
-            // console.log("val + 1 condition", destVal !== (cardVal + 1));
-            // console.log("val - 1 condition", destVal !== (cardVal - 1));
-            
             if (destinationCard?.symbol !== card.symbol || (destVal !== (cardVal + 1) && destVal !== (cardVal - 1))){
                 throw new Error("you have to play the same symbol and neighbour value")
             }
