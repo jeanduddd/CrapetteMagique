@@ -166,6 +166,23 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("crapette" ,() => {
+    try {
+      const saidCrapette = sessionId;
+
+      let missed = false;
+      for (const id of players.keys()) {
+        if (id !== saidCrapette) {
+          missed = game?.hasMissedCrapette(id) ?? false;
+        }
+      }
+
+      console.log("result: ", missed);
+    } catch (e) {
+      socket.emit("moveError", { message: (e as Error).message });
+    }
+  })
+
   socket.on("revealDraw", () => {
     try {
       console.log("reveal draw request recieved");
