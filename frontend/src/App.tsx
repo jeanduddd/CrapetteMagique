@@ -155,6 +155,11 @@ export default function App() {
     }
   };
 
+  const sayCrapette = () => {
+    console.log("enemy said crapette");
+    socket?.emit("crapette")
+  }
+
   const revealDraw = () => {
     console.log("revealDraw");
     socket?.emit("revealDraw");
@@ -256,6 +261,7 @@ export default function App() {
           setOrigin={setOriginDrag}
           setDestination={setDestinationDrop}
           gameState={gameState}
+          sayCrapette={sayCrapette}
         ></Game>
       )}
     </>
