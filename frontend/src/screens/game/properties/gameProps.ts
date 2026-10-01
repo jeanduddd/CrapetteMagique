@@ -6,4 +6,5 @@ export type GameProps = {
     setDestination: (arg0: Location) => void
     origin: Location | null
     revealDraw: () => void
+    sayCrapette: ()=> void
 }

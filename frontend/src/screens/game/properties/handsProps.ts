@@ -7,4 +7,6 @@ export type HandsProps = {
     setOrigin: (arg0: Location) => void,
     setDestination: (arg0: Location) => void
     revealDraw: () => void
+    myTurn?: boolean
+    sayCrapette?: ()=> void
 }

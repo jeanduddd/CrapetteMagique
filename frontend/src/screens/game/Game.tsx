@@ -6,7 +6,7 @@ import Board from "./components/Board"
 import GameStyles from "./style/GameScreenStyle"
 import { useWindowSize } from "../../screenSize"
 
-const Game = ({gameState, setOrigin, setDestination, origin, revealDraw} : GameProps) => {
+const Game = ({gameState, setOrigin, setDestination, origin, revealDraw, sayCrapette} : GameProps) => {
 
     const [, height] = useWindowSize();
 
@@ -26,7 +26,7 @@ const Game = ({gameState, setOrigin, setDestination, origin, revealDraw} : GameP
                 <Board origin={origin} setOrigin={setOrigin} setDestination={setDestination} aces={gameState.aces} boardPiles={gameState.board}></Board>
             </div>
             <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
-                <MyHand revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
+                <MyHand sayCrapette={sayCrapette} myTurn={gameState.myTurn} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
             </div>
         </div>
     )
