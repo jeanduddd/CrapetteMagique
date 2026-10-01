@@ -2,7 +2,8 @@ import { Player } from "./player/player"
 import { GameBoard } from "./gameBoard/gameBoard"
 import { AcePile, BoardPile, Deck } from "./cards/cardCollection"
 import { Card } from "./cards/card";
-import { GameState, Location, ZoneName, PileData, CardData } from "@shared/IPlayCard";
+import { GameState, Location, ZoneName, PileData, CardData, PlayRequest } from "@shared/IPlayCard";
+import { error } from "node:console";
 
 
 export class GameData{
@@ -221,18 +222,18 @@ export class GameData{
         }
     }
 
-    getTopCard(location: Location, playerId: number|null):Card|null{
+    getTopCard(location: Location, playerId: number|null, state: GameData = this):Card|null{
         const pileId: number|null = location.index
         let card = null
         switch (location.zone) {
             case "BIN":
             case "CRAPETTE":
             case "DRAW":
-                if (playerId !== null) card = this.players[playerId].getTopCardValue(location.zone)
+                if (playerId !== null) card = state.players[playerId].getTopCardValue(location.zone)
                 break;
             case "BOARD":
             case "ACE":
-                if (pileId !== null) card = this.gameBoard.getTopCardValue(location.zone, pileId)
+                if (pileId !== null) card = state.gameBoard.getTopCardValue(location.zone, pileId)
                 break;
             case "THROW":
                 break;
@@ -243,35 +244,35 @@ export class GameData{
         return card
     }
 
-    addCard(location: Location, card: Card):void{
+    addCard(location: Location, card: Card, state: GameData = this):void{
         const pileId: number|null = location.index
         switch (location.zone) {
             case "THROW":
-                this.players[this.playersTurns[0]].addOnTop(card, location.zone)
+                state.players[state.playersTurns[0]].addOnTop(card, location.zone)
                 break;
             case "BIN":
             case "CRAPETTE":
-                this.players[this.playersTurns[1]].addOnTop(card, location.zone)
+                state.players[state.playersTurns[1]].addOnTop(card, location.zone)
                 break;
             case "BOARD":
             case "ACE":
-                if (pileId !== null) this.gameBoard.addOnTop(card, location.zone, pileId)
+                if (pileId !== null) state.gameBoard.addOnTop(card, location.zone, pileId)
                 break;
             default:
                 throw new Error("This location doesn't exist...")
         }
     }
 
-    playTopCard(location: Location):Card{
+    playTopCard(location: Location, state: GameData = this):Card{
         const pileId: number|null = location.index
         switch (location.zone) {
             case "BIN":
             case "CRAPETTE":
             case "DRAW":
-                console.log("on joue la carte de: ", this.getPlayerName(this.playersTurns[0]))
-                return this.players[this.playersTurns[0]].playTopValue(location.zone)
+                console.log("on joue la carte de: ", state.getPlayerName(state.playersTurns[0]))
+                return state.players[state.playersTurns[0]].playTopValue(location.zone)
             case "BOARD":
-                if (pileId !== null) return this.gameBoard.playTopValue(location.zone, pileId)
+                if (pileId !== null) return state.gameBoard.playTopValue(location.zone, pileId)
                 break;
             default:
                 throw new Error("This location doesn't exist...")
@@ -283,8 +284,8 @@ export class GameData{
         this.players[this.playersTurns[0]].newTurn()
     }
 
-    czechMove(card: Card, destination: Location){
-        const destinationCard = this.getTopCard(destination, this.playersTurns[1]) // ATTENTION ICI
+    czechMove(card: Card, destination: Location, state: GameData = this){
+        const destinationCard = state.getTopCard(destination, state.playersTurns[1]) // ATTENTION ICI
         const destVal = Number(destinationCard?.value);
         const cardVal = Number(card.value);
         if (destination.zone === "DRAW"){
@@ -322,8 +323,159 @@ export class GameData{
             }
         }
     }
+    
+    hasMissedCrapette(playerId: number):boolean {
 
+        if (playerId !== this.playersTurns[0]) throw new Error("You can't say crapette... You're playing")
+        const topCrapette = this.players[playerId].getTopCardValue("CRAPETTE")
+        if (topCrapette === null) return false;
 
+        const initialState = this.clone()
+
+        console.log("begin the detection process");
+        
+        return this._crapetteSolver(playerId,initialState, 0, new Set());
+    }
+
+    _crapetteSolver(playerId: number, state: GameData, depth: number, history: Set<string>):boolean {
+        
+        if (depth > 10) return false;
+
+        console.log("depth: ",depth)
+        console.log("player id :",playerId);
+        if (depth === 0) console.dir(state, { depth: null, colors: true });
+        
+
+        const topCrapette = state.getTopCard(this.instanciateLocation("CRAPETTE",null),playerId,state)
+        console.log("crapette: ", topCrapette);
+        
+        if (topCrapette === null) return false;
+
+        if (this._canCardBePlayedAnywhere(topCrapette, state)) {
+            return true;
+        }
+
+        const movableCards: { card: Card; origin: Location }[] = []
+
+        const binCard = state.getTopCard(this.instanciateLocation("BIN",null),playerId,state)
+        if (binCard !== null) movableCards.push({ card: binCard, origin: this.instanciateLocation("BIN",null) })
+        
+        for (let i = 0; i < 8; i++){
+            const card = state.getTopCard(this.instanciateLocation("BOARD",i), playerId, state)
+            if (card !== null) movableCards.push({ card: card, origin: this.instanciateLocation("BOARD",i) })
+        }
+        
+        const enemyId = state.playersTurns[1]
+
+        for (let item of movableCards){
+            const validDestinations = this._getValidDestinations(item.card, state, enemyId)
+
+            for (let dest of validDestinations){
+
+                const simulatedState = this._applySimulatedMove(item, dest, state);
+                const stateSignature = JSON.stringify(simulatedState);
+                if (history.has(stateSignature)) {
+                    continue; 
+                }
+                history.add(stateSignature);
+
+                const isMoveToCenter = dest.zone === "ACE";
+                const newDepth = isMoveToCenter ? depth : depth + 1;
+
+                if (this._crapetteSolver(playerId, simulatedState, newDepth, history)) {
+                    return true;
+                }
+            }
+
+        }
+        return false
+    }
+
+    _applySimulatedMove(item: { card: Card; origin: Location } , destination: Location, state: GameData): GameData{
+        const newState: GameData = state.clone()
+
+        try{
+            console.log((item));
+            console.log(destination);
+                      
+            
+            newState.playTopCard(item.origin, newState)
+            newState.addCard(destination,item.card, newState) 
+        }
+        catch{}
+
+        return newState 
+    }
+
+    _getValidDestinations(card: Card, state: GameData, enemyId: number): Location[]{
+        const destinationList: Location[] = []
+        for (let i = 0; i < 8; i++){
+            const dest = this.instanciateLocation("BOARD",i)
+            try{
+                this.czechMove(card, dest, state)
+                destinationList.push(dest)
+            }
+            catch {
+                continue
+            }
+        }
+        for (let i = 0; i < 8; i++){
+            const dest = this.instanciateLocation("ACE",i)
+            try{
+                this.czechMove(card, dest, state)
+                destinationList.push(dest)
+            }
+            catch {
+                continue
+            }
+        }
+        try{
+            const dest = this.instanciateLocation("CRAPETTE",null)
+            this.czechMove(card, dest , state)
+            destinationList.push(dest)
+        }
+        catch {}
+        try{
+            const dest = this.instanciateLocation("BIN",null)
+            this.czechMove(card, dest , state)
+            destinationList.push(dest)
+        }
+        catch {}
+
+        return destinationList
+    }
+
+    _canCardBePlayedAnywhere(card:Card, state: GameData):boolean{
+        for (let i = 0; i < 8; i++){
+            try {
+                this.czechMove(card, this.instanciateLocation("ACE",i), state)
+                return true
+            }
+            catch {
+                continue
+            }
+        }
+        for (let i = 0; i < 8; i++){
+            try {
+                this.czechMove(card, this.instanciateLocation("BOARD",i), state)
+                return true
+            }
+            catch {
+                continue
+            }
+        }
+        try{
+            const dest = this.instanciateLocation("CRAPETTE",null)
+            this.czechMove(card, dest , state)
+        }
+        catch {}
+        try{
+            const dest = this.instanciateLocation("BIN",null)
+            this.czechMove(card, dest , state)
+        }
+        catch {}
+        return false
+    }
 
 
     play(playerId: number, origin: Location, destination: Location){
@@ -379,5 +531,22 @@ export class GameData{
             this.winnerId = playerId
             this.gameStatus = "won"
         }
+    }
+
+    clone(): GameData{
+        const copy: GameData = Object.create(GameData.prototype);
+        copy.winnerId = this.winnerId
+        copy.gameStatus = this.gameStatus
+        copy.playersTurns = []
+        for (let players of this.playersTurns){
+            copy.playersTurns.push(players)
+        }
+        copy.players = {};
+        for (const [playerId, player] of Object.entries(this.players)) {
+            copy.players[playerId] = player.clone();
+        }
+        copy.gameBoard = this.gameBoard.clone()
+
+        return copy
     }
 }
