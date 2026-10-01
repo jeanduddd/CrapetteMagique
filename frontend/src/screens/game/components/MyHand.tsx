@@ -50,7 +50,7 @@ const MyHand = ({crapette, bin, draw, setOrigin, setDestination, revealDraw, myT
                     boxShadow: `0 ${statusBorderSize}px ${statusBorderSize*2.5}px rgba(0,0,0,0.3)`,
                     marginBottom: cardHeight/14
                     }}></div>
-                {myTurn ? <button style={{height:cardHeight/4, opacity:0}}></button> : <button style={{fontSize: crapetteFontSize, height:cardHeight/4}} onClick={sayCrapette}>Crapette !</button>}
+                {myTurn ? <button style={{height:cardHeight/4, opacity:0}}></button> : <button style={{fontSize: crapetteFontSize, height:cardHeight/4, cursor: 'pointer',backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '20px'}} onClick={sayCrapette}>Crapette !</button>}
                 
             </div>
         </div>
