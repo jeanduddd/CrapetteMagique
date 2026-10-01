@@ -105,4 +105,13 @@ export class PlayerHand{
         }
         return false
     }
+
+    clone(): PlayerHand{
+        const copy: PlayerHand = Object.create(PlayerHand.prototype);
+        copy.crapette = this.crapette.clone()
+        copy.bin = this.bin.clone()
+        copy.draw = this.draw.clone()
+
+        return copy
+    }
 }

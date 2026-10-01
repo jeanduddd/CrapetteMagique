@@ -86,14 +86,11 @@ export class GameBoard{
         return aces
     }
 
-    
+    clone():GameBoard{
+        const copy: GameBoard = Object.create(GameBoard.prototype);
+        copy.aceSpots = this.aceSpots.map(aceSpot => aceSpot.clone());
+        copy.boardSpots = this.boardSpots.map(boardSpot => boardSpot.clone());
 
-    /*
-    add on Ace
-    add on Board
-    get top ace
-    get top Board
-    get board (pr l'affichage)
-    
-     */
+        return copy
+    }
 }

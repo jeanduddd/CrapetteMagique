@@ -6,6 +6,12 @@ export class CardCollection{
     getCount(): number{
         return this.cards.length
     }
+
+    cloneCards():Card[]{
+        const cards = this.cards.map(card => card.clone());
+        
+        return cards;
+    }
 }
 
 export class Deck extends CardCollection {
@@ -78,6 +84,13 @@ export class Crapette extends CardCollection{
         }
         return topCard
     }
+
+    clone():Crapette{
+        const copy: Crapette = Object.create(Crapette.prototype);
+        copy.cards = super.cloneCards()
+
+        return copy
+    }
 }
 
 export class Bin extends CardCollection{
@@ -139,6 +152,13 @@ export class Bin extends CardCollection{
         return topCard
     }
 
+    clone():Bin{
+        const copy: Bin = Object.create(Bin.prototype);
+        copy.cards = super.cloneCards()
+        copy.played = this.played
+
+        return copy
+    }
 }
 
 export class Draw extends CardCollection{
@@ -196,6 +216,14 @@ export class Draw extends CardCollection{
         return this.shown
     }
 
+    clone():Draw{
+        const copy: Draw = Object.create(Draw.prototype);
+        copy.cards = super.cloneCards()
+        copy.shown = this.shown
+
+        return copy
+    }
+
 }
 
 export class AcePile extends CardCollection{
@@ -217,6 +245,7 @@ export class AcePile extends CardCollection{
                 throw new Error("Cannot put this card here")
             }
         }
+
     }
 
     getTopCardValue():Card|null{
@@ -224,6 +253,13 @@ export class AcePile extends CardCollection{
             return null
         }
         else return this.cards[this.cards.length -1]
+    }
+
+    clone():AcePile{
+        const copy: AcePile = Object.create(AcePile.prototype);
+        copy.cards = super.cloneCards()
+
+        return copy
     }
 }
 
@@ -272,5 +308,12 @@ export class BoardPile extends CardCollection{
             return null
         }
         return this.cards
+    }
+
+    clone():BoardPile{
+        const copy: BoardPile = Object.create(BoardPile.prototype);
+        copy.cards = super.cloneCards()
+
+        return copy
     }
 }

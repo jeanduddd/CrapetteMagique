@@ -53,4 +53,13 @@ export class Player{
     getName():string{
         return this.name
     }
+
+    clone(): Player{
+        const copy: Player = Object.create(Player.prototype);
+        copy.id = this.id
+        copy.name = this.name
+        copy.playerHand = this.playerHand.clone()
+
+        return copy
+    }
 }

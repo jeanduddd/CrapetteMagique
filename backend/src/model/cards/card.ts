@@ -6,4 +6,9 @@ export class Card {
         this.value = value;
         this.symbol = symbol;
     }
+
+    clone():Card{
+        const copy = new Card(this.value, this.symbol);
+        return copy;
+    }
 }
