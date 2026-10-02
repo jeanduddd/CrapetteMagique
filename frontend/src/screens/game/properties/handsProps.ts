@@ -10,4 +10,5 @@ export type HandsProps = {
     myTurn?: boolean
     sayCrapette?: ()=> void
     canSayCrapette?: boolean
+    name: string
 }

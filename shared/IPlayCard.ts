@@ -21,6 +21,8 @@ export interface PileData {
 }
 
 export interface GameState {
+    myName: string,
+    enemyName: string,
     myTurn: boolean;
     canSayCrapette: boolean;
     draw: PileData;

@@ -164,6 +164,9 @@ export class GameData{
         }
         const enemyId = this.playersTurns.filter(id => id !== playerId)[0]
 
+        const myName = this.players[playerId].getName()
+        const enemyName = this.players[enemyId].getName()
+
         const myTurn: boolean = playerId === this.playersTurns[0]
         const myDrawShown: boolean | null  = this.players[playerId].getDrawShown()
         const enemyDrawShown: boolean | null  = this.players[enemyId].getDrawShown()
@@ -211,6 +214,8 @@ export class GameData{
         const board = this.safelyToPileDataFromBoard(boardPiles)
 
         return {
+            myName: myName,
+            enemyName: enemyName,
             myTurn: myTurn,
             canSayCrapette: canSayCrapette,
             crapette: crapette,
