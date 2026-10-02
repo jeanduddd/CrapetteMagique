@@ -17,9 +17,8 @@ const socket = io(SERVER_URL, {
 });
 
 export default function App() {
-
   const [width, height] = useWindowSize();
-  console.log(width, height)
+  console.log(width, height);
 
   const [name, setName] = useState<string | null>(
     sessionStorage.getItem("pseudo"),
@@ -53,6 +52,8 @@ export default function App() {
     setErrorKey((prev) => prev + 1);
   };
 
+  const [crapetteMagiqueVisible, setCrapetteMagiqueVisible] = useState(false);
+
   useEffect(() => {
     const playerId = sessionStorage.getItem("playerId");
     const name = sessionStorage.getItem("pseudo");
@@ -81,14 +82,14 @@ export default function App() {
       setView("FULL");
       socket?.disconnect();
       sessionStorage.removeItem("playerId");
-      setPlayerId(null)
+      setPlayerId(null);
     });
 
-    socket.on("sessionExpired", () => {      
+    socket.on("sessionExpired", () => {
       triggerError("Your session has expired");
       socket?.disconnect();
       sessionStorage.removeItem("playerId");
-      setPlayerId(null)
+      setPlayerId(null);
       setView("MENU");
     });
 
@@ -121,6 +122,14 @@ export default function App() {
       setPlayerId(null);
     });
 
+    socket.on("missedCrapette", () => {
+      setCrapetteMagiqueVisible(true)
+    });
+
+    socket.on("didntMissedCrapette", () => {
+      triggerError("You called crapette wrongly");
+    });
+
     return () => {
       socket.off("session");
       socket.off("wait");
@@ -131,6 +140,8 @@ export default function App() {
       socket.off("won");
       socket.off("lost");
       socket.off("wonByDefault");
+      socket.off("missedCrapette");
+      socket.off("didntMissedCrapette");
     };
   }, []);
 
@@ -156,9 +167,9 @@ export default function App() {
   };
 
   const sayCrapette = () => {
-    console.log("enemy said crapette");
-    socket?.emit("crapette")
-  }
+    console.log("i said crapette");
+    socket?.emit("crapette");
+  };
 
   const revealDraw = () => {
     console.log("revealDraw");
@@ -179,6 +190,19 @@ export default function App() {
     };
   }, [errorKey, errorMessage]);
 
+  useEffect(() => {
+    if (crapetteMagiqueVisible === false) return;
+
+    const timerVisible = setTimeout(
+      () => setCrapetteMagiqueVisible(false),
+      1000,
+    );
+
+    return () => {
+      clearTimeout(timerVisible);
+    };
+  }, [crapetteMagiqueVisible]);
+
   const handleClicPlay = () => {
     if (name?.trim() === "" || name === null)
       return triggerError("You must choose a name...");
@@ -194,9 +218,11 @@ export default function App() {
     setView("MENU");
   };
 
-  const fontSize = Math.min(height, width) * 0.03
-  const paddingVert = Math.min(height, width) * 0.02
-  const paddingHor = Math.min(height, width) * 0.06
+  const fontSize = Math.min(height, width) * 0.03;
+  const paddingVert = Math.min(height, width) * 0.02;
+  const paddingHor = Math.min(height, width) * 0.06;
+  const crapetteFontSize = Math.min(height, width) * 0.15
+  const crapetteImageSize = Math.min(height, width) / 1.5 ;
 
   return (
     <>
@@ -216,7 +242,7 @@ export default function App() {
               errorVisible === false
                 ? "opacity 3s ease-in-out"
                 : "opacity 0.2s ease-out",
-            textAlign: 'center',
+            textAlign: "center",
             color: "#FFFFFF",
             backgroundColor: "#7F1D1D",
             padding: `${paddingVert}px ${paddingHor}px`,
@@ -230,6 +256,42 @@ export default function App() {
           {errorMessage}
         </p>
       }
+      <div
+        style={{
+          position: "absolute",
+          opacity: crapetteMagiqueVisible === true ? 1 : 0,
+          transition: "opacity 2s ease-in-out",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        <p
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "100vw",
+            transform: "translate( -50% , -140%)",
+            zIndex: 400,
+            textAlign: "center",
+            color: "#dfe533",
+            fontSize: crapetteFontSize,
+          }}
+        >
+          CRAPETTE !
+        </p>
+        <img
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate( -50% , -65%)",
+            zIndex: 300,
+          }}
+          src="/baguetteMagique.png"
+          height={crapetteImageSize}
+        ></img>
+      </div>
       {view === "MENU" && (
         <MenuScreen
           name={name ?? ""}
