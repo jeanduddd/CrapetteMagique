@@ -328,9 +328,9 @@ export class GameData{
     
     hasMissedCrapette(playerId: number):boolean {
 
-        if (playerId !== this.playersTurns[0]) throw new Error("You can't say crapette... You're playing")
+        if (playerId !== this.playersTurns[0]) throw new Error("Can't say crapette... You're playing")
         const drawShown = this.players[playerId].getDrawShown()
-        if (drawShown === null || drawShown === false) throw new Error("You can't say crapette if the draw is not shown")
+        if (drawShown === null || drawShown === false) throw new Error("Can't say crapette, draw not shown")
 
         this.players[this.playersTurns[1]].setAlreadySaidCrapette(true)
         
@@ -402,9 +402,6 @@ export class GameData{
             console.log((item));
             console.log("card: ", newState.getTopCard(destination, this.playersTurns[1],newState) ,"destination: ", destination);
                       
-            // OKKKKKKKKKK 
-            // la detection de crapette prend en compte le fait qu'on joue notre poubelle a nous
-            // alors que ca compte pas puisque ca revient à jouer la pioche
             newState.playTopCard(item.origin, newState)
             newState.addCard(destination,item.card, newState) 
         }
