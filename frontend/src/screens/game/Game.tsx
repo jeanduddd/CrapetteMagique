@@ -20,13 +20,13 @@ const Game = ({gameState, setOrigin, setDestination, origin, revealDraw, sayCrap
     return (
         <div style={styles.screen}>
             <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
-                <EnemyHand revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.enemyCrapette} bin={gameState.enemyBin} draw={gameState.enemyDraw}></EnemyHand>
+                <EnemyHand name={gameState.enemyName} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.enemyCrapette} bin={gameState.enemyBin} draw={gameState.enemyDraw}></EnemyHand>
             </div>
             <div style={{height: boardSize, width: '100vw', ...GameStyles.border}}>
                 <Board origin={origin} setOrigin={setOrigin} setDestination={setDestination} aces={gameState.aces} boardPiles={gameState.board}></Board>
             </div>
             <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
-                <MyHand canSayCrapette={gameState.canSayCrapette} sayCrapette={sayCrapette} myTurn={gameState.myTurn} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
+                <MyHand name={gameState.myName} canSayCrapette={gameState.canSayCrapette} sayCrapette={sayCrapette} myTurn={gameState.myTurn} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
             </div>
         </div>
     )
