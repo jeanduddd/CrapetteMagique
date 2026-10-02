@@ -258,9 +258,12 @@ export default function App() {
       }
       <div
         style={{
+          zIndex:50,
           position: "absolute",
           opacity: crapetteMagiqueVisible === true ? 1 : 0,
-          transition: "opacity 2s ease-in-out",
+          transition: crapetteMagiqueVisible === false
+                ? "opacity 2s ease-out"
+                : "opacity 0s ease-out",
           width: "100vw",
           height: "100vh",
           pointerEvents: "none",
