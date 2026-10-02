@@ -6,6 +6,8 @@ const GameStyles = {
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
