@@ -26,7 +26,7 @@ const Game = ({gameState, setOrigin, setDestination, origin, revealDraw, sayCrap
                 <Board origin={origin} setOrigin={setOrigin} setDestination={setDestination} aces={gameState.aces} boardPiles={gameState.board}></Board>
             </div>
             <div style={{height: handSize, width: '100vw', ...GameStyles.border}}>
-                <MyHand sayCrapette={sayCrapette} myTurn={gameState.myTurn} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
+                <MyHand canSayCrapette={gameState.canSayCrapette} sayCrapette={sayCrapette} myTurn={gameState.myTurn} revealDraw={revealDraw} setOrigin={setOrigin} setDestination={setDestination} crapette={gameState.crapette} bin={gameState.bin} draw={gameState.draw}></MyHand> 
             </div>
         </div>
     )

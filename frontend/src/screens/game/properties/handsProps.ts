@@ -9,4 +9,5 @@ export type HandsProps = {
     revealDraw: () => void
     myTurn?: boolean
     sayCrapette?: ()=> void
+    canSayCrapette?: boolean
 }
