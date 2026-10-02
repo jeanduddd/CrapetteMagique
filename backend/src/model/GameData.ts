@@ -363,9 +363,6 @@ export class GameData{
         }
 
         const movableCards: { card: Card; origin: Location }[] = []
-
-        const binCard = state.getTopCard(this.instanciateLocation("BIN",null),playerId,state)
-        if (binCard !== null) movableCards.push({ card: binCard, origin: this.instanciateLocation("BIN",null) })
         
         for (let i = 0; i < 8; i++){
             const card = state.getTopCard(this.instanciateLocation("BOARD",i), playerId, state)
@@ -403,9 +400,11 @@ export class GameData{
 
         try{
             console.log((item));
-            console.log(destination);
+            console.log("card: ", newState.getTopCard(destination, this.playersTurns[1],newState) ,"destination: ", destination);
                       
-            
+            // OKKKKKKKKKK 
+            // la detection de crapette prend en compte le fait qu'on joue notre poubelle a nous
+            // alors que ca compte pas puisque ca revient à jouer la pioche
             newState.playTopCard(item.origin, newState)
             newState.addCard(destination,item.card, newState) 
         }
