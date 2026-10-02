@@ -167,6 +167,7 @@ export class GameData{
         const myTurn: boolean = playerId === this.playersTurns[0]
         const myDrawShown: boolean | null  = this.players[playerId].getDrawShown()
         const enemyDrawShown: boolean | null  = this.players[enemyId].getDrawShown()
+        const canSayCrapette: boolean = !myTurn && !this.players[playerId].getAlreadySaidCrapette() && enemyDrawShown !== null && enemyDrawShown
         
         //my cards
         const drawCard: Card|null = this.getTopCard(this.instanciateLocation("DRAW",null),playerId)
@@ -211,6 +212,7 @@ export class GameData{
 
         return {
             myTurn: myTurn,
+            canSayCrapette: canSayCrapette,
             crapette: crapette,
             enemyCrapette: enemyCrapette,
             bin: bin,
@@ -327,6 +329,11 @@ export class GameData{
     hasMissedCrapette(playerId: number):boolean {
 
         if (playerId !== this.playersTurns[0]) throw new Error("You can't say crapette... You're playing")
+        const drawShown = this.players[playerId].getDrawShown()
+        if (drawShown === null || drawShown === false) throw new Error("You can't say crapette if the draw is not shown")
+
+        this.players[this.playersTurns[1]].setAlreadySaidCrapette(true)
+        
         const topCrapette = this.players[playerId].getTopCardValue("CRAPETTE")
         if (topCrapette === null) return false;
 
@@ -477,6 +484,16 @@ export class GameData{
         return false
     }
 
+    setGameAfterCrapette(){
+        const playingId = this.playersTurns[0]
+
+        this.players[this.playersTurns[1]].setAlreadySaidCrapette(false)
+        this.players[this.playersTurns[1]].resetBin()
+        this.playersTurns[0] = this.playersTurns[1]
+        this.playersTurns[1] = playingId
+        this.players[playingId].resetforNextTurn()
+    }
+
 
     play(playerId: number, origin: Location, destination: Location){
         if (playerId !== this.playersTurns[0]){
@@ -517,6 +534,7 @@ export class GameData{
         
 
         if (origin.zone === "DRAW" && destination.zone === "THROW"){
+            this.players[this.playersTurns[1]].setAlreadySaidCrapette(false)
             this.players[this.playersTurns[1]].resetBin()
             this.playersTurns[0] = this.playersTurns[1]
             this.playersTurns[1] = currentPlayerId

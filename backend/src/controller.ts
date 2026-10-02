@@ -169,15 +169,26 @@ io.on("connection", (socket) => {
   socket.on("crapette" ,() => {
     try {
       const saidCrapette = sessionId;
+      let theOtherOne
 
       let missed = false;
       for (const id of players.keys()) {
         if (id !== saidCrapette) {
+          theOtherOne = id
           missed = game?.hasMissedCrapette(id) ?? false;
         }
       }
+      if (missed){
+        game?.setGameAfterCrapette()
+        io.to(players.get(theOtherOne).socketId).emit("missedCrapette");
+      }
+      else{
+        io.to(players.get(saidCrapette).socketId).emit("didntMissedCrapette");
+      }
+      sendGameState()
 
       console.log("result: ", missed);
+      
     } catch (e) {
       socket.emit("moveError", { message: (e as Error).message });
     }

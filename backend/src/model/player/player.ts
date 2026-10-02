@@ -7,11 +7,21 @@ export class Player{
     protected playerHand: PlayerHand
     protected name: string
     protected id: number
+    protected alreadySaidCrapette: boolean
 
     constructor(name: string, id: number, deck: Deck){
         this.name = name
         this.id = id
+        this.alreadySaidCrapette = false
         this.playerHand = new PlayerHand(deck)
+    }
+
+    getAlreadySaidCrapette():boolean{
+        return this.alreadySaidCrapette
+    }
+
+    setAlreadySaidCrapette(bool: boolean):void{
+        this.alreadySaidCrapette = bool
     }
 
     getTopCardValue(name: ZoneName):Card|null{

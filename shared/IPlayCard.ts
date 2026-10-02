@@ -22,6 +22,7 @@ export interface PileData {
 
 export interface GameState {
     myTurn: boolean;
+    canSayCrapette: boolean;
     draw: PileData;
     enemyDraw: PileData,
     bin: PileData;
