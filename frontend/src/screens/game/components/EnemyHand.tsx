@@ -18,8 +18,8 @@ const EnemyHand = ({crapette, bin, draw, setDestination, name}: HandsProps) => {
     }
     
     return (
-        <div style={{width: '100vw', alignItems:"center", display: "flex", flexDirection:"column", margin:0, padding:0, height: height/6}}>               
-            <div style={{...handStyles.hand, gap: width/20, height: height/6 - nicknameHeight - nicknameGap}}>
+        <div style={{width: '100vw', alignItems:"center", display: "flex", flexDirection:"column", justifyContent:"center", margin:0, padding:0, height: height/6}}>               
+            <div style={{...handStyles.hand, gap: width/20}}>
                 {crapette.cardNumber === 0 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'forbidden_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable={false} onDrop={() => dragEnd("CRAPETTE")} onDragEnter={(e) => e.preventDefault()} onDragOver={(e) => {e.preventDefault()}} style={{...cardStyles.card, height:cardHeight}} src={`${crapette.cards?.[0].symbol}_${crapette.cards?.[0].value}.png`}></img>}
                 {bin.cardNumber === 0 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'trash_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable={false} onDrop={() => dragEnd("BIN")} onDragEnter={(e) => e.preventDefault()} onDragOver={(e) => {e.preventDefault()}} style={{...cardStyles.card, height:cardHeight}} src={`${bin.cards?.[0].symbol}_${bin.cards?.[0].value}.png`}></img>}
                 {draw.cardNumber === -1 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'card_back.png'}></img> : draw.cardNumber === 0 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'empty_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable={false} style={{...cardStyles.card, height:cardHeight}} src={`${draw.cards?.[0].symbol}_${draw.cards?.[0].value}.png`}></img>}

@@ -26,13 +26,13 @@ const MyHand = ({crapette, bin, draw, setOrigin, setDestination, revealDraw, myT
     }
 
     return (
-        <div style={handStyles.hand}>
-            <div style={{width: '100vw', alignItems:"center", display: "flex", flexDirection:"column", gap:nicknameGap, margin:0, padding:0, height: height/6}}>
+        <div style={{...handStyles.hand, height:height/6}}>
+            <div style={{width: '100vw', alignItems:"center", display: "flex", flexDirection:"column", justifyContent:"center", gap:nicknameGap,  margin:0, padding:0, height: height/6}}>
                 <div style={{margin:0, padding:0, height:nicknameHeight, textAlign:"center", verticalAlign:"center"}}>
                     <p style={{ margin: 0, fontSize: `${nicknameFontSize}px`, color: 'white' }}>{name}</p>
                 </div>
                 
-                <div style={{...handStyles.hand, gap: width/20, height: height/6 - nicknameHeight - nicknameGap}}>
+                <div style={{...handStyles.hand, gap: width/20}}>
                     {draw.cardNumber === -1 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} onClick={revealDraw} style={{...cardStyles.card, height:cardHeight}} src={'card_back.png'}></img> : draw.cardNumber === 0 ? <img  onContextMenu={(e) => e.preventDefault()}draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'empty_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable="true" onClick={revealDraw} onDragStart={() => dragStart("DRAW")} style={{...cardStyles.card, height:cardHeight}} src={`${draw.cards?.[0].symbol}_${draw.cards?.[0].value}.png`}></img>}
                     {bin.cardNumber === 0 ? <img onContextMenu={(e) => e.preventDefault()} draggable={false} onDrop={() => dragEnd("THROW")} onDragEnter={(e) => e.preventDefault()} onDragOver={(e) => {e.preventDefault()}} style={{...cardStyles.card, height:cardHeight*0.93}} src={'trash_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable="true" onDragStart={() => dragStart("BIN")} onDrop={() => dragEnd("THROW")} onDragEnter={(e) => e.preventDefault()} onDragOver={(e) => {e.preventDefault()}} style={{...cardStyles.card, height:cardHeight}} src={`${bin.cards?.[0].symbol}_${bin.cards?.[0].value}.png`}></img>}
                     {crapette.cardNumber === 0 ? <img  onContextMenu={(e) => e.preventDefault()}draggable={false} style={{...cardStyles.card, height:cardHeight}} src={'forbidden_spot.png'}></img> : <img onContextMenu={(e) => e.preventDefault()} draggable="true" onDragStart={() => dragStart("CRAPETTE")} style={{...cardStyles.card, height:cardHeight}} src={`${crapette.cards?.[0].symbol}_${crapette.cards?.[0].value}.png`}></img>}
