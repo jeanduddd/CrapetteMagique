@@ -263,6 +263,7 @@ export default function App() {
           transition: "opacity 2s ease-in-out",
           width: "100vw",
           height: "100vh",
+          pointerEvents: "none",
         }}
       >
         <p
