@@ -31,6 +31,7 @@ Vous pouvez bloquer votre adversaire en plaçant vos cartes directement sur sa C
 La Crapette est prioritaire. Si vous retournez une carte de votre pioche alors que vous pouviez jouer votre Crapette (directement, ou en déplaçant des cartes sur le plateau pour lui faire de la place), vous êtes en faute !
 
 L'adversaire peut alors appuyer sur le bouton "CRAPETTE !". Si la faute est avérée, votre tour s'interrompt instantanément. (Cette pénalité ne s'applique plus si votre tas de Crapette est vide).
+Si la personne se trompe, elle n'a plus la possibilité de dire souligner l'erreur.
 
 ## Fonctionnalités
 - **Matchmaking (Actuel) :** Recherche d'adversaire aléatoire avec une seule partie gérée à la fois.
