@@ -34,7 +34,11 @@ io.on("connection", (socket) => {
   let sessionId = socket.handshake.auth.sessionId;
   const pseudo = socket.handshake.auth.pseudo;
 
-  const sendGameState = () => {
+  console.log("recieved connection information : ");
+  console.log("sessionId : ", sessionId);
+  console.log("pseudo :", pseudo);
+  
+    const sendGameState = () => {
     console.log("send state");
 
     const inGamePlayers = Array.from(players);

@@ -38,7 +38,7 @@ export default function App() {
 
   const connectToServer = (playerID: string | null, playerName: string) => {
     sessionStorage.setItem("pseudo", playerName);
-    socket.auth = { sessionId: playerID, pseudo: name };
+    socket.auth = { sessionId: playerID, pseudo: playerName };
     socket.connect();
   };
 
@@ -65,6 +65,13 @@ export default function App() {
 
     socket.on("session", (donnees) => {
       sessionStorage.setItem("playerId", donnees.sessionId);
+      setPlayerId(donnees.sessionId);
+
+      socket.auth = {
+        ...socket.auth,
+        sessionId: donnees.sessionId,
+        pseudo: sessionStorage.getItem("pseudo") ?? name,
+      };
     });
 
     socket.on("wait", () => {
